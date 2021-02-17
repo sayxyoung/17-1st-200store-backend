@@ -6,7 +6,7 @@ class Product(models.Model):
     name            = models.CharField(max_length=50)
     price           = models.DecimalField(max_digits=8, decimal_places=2)
     stock           = models.PositiveIntegerField(default=0)
-    sale            = models.IntegerField(default=0)
+    sale            = models.DecimalField(max_digits=5, decimal_places=3,default=0)
     user            = models.ManyToManyField('user.user', through='productlike',related_name='product_like')
     create_at       = models.DateTimeField(auto_now_add=True)
     update_at       = models.DateTimeField(auto_now=True)
@@ -72,7 +72,7 @@ class ReviewStatus(models.Model):
     order           = models.ForeignKey('order.order', on_delete=models.CASCADE)
 
     class Mets:
-        db_table = 'reviewstatuses'
+        db_table = 'review_statuses'
 
 
 # 상품 문의
