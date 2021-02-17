@@ -1,6 +1,5 @@
 from django.db import models
 
-# 상품
 class Product(models.Model):
     category        = models.ForeignKey('category', on_delete=models.CASCADE)
     name            = models.CharField(max_length=50)
@@ -17,7 +16,6 @@ class Product(models.Model):
     class Meta:
         db_table = 'products'
 
-# 카테고리
 class Category(models.Model):
     name            = models.CharField(max_length=20)
 
@@ -27,7 +25,6 @@ class Category(models.Model):
     class Meta:
         db_table = 'categories'
 
-# 상품 이미지
 class ProductImage(models.Model):
     product         = models.ForeignKey('product', on_delete=models.CASCADE)
     image_url       = models.URLField(max_length=4000)
@@ -35,7 +32,6 @@ class ProductImage(models.Model):
     class Meta:
         db_table = 'product_images'
 
-# 상품 좋아요
 class ProductLike(models.Model):
     product         = models.ForeignKey('product', on_delete=models.CASCADE)
     user            = models.ForeignKey('user.user', on_delete=models.CASCADE)
@@ -54,7 +50,6 @@ class ProductOption(models.Model):
     class Meta:
         db_table = 'product_options'
 
-# 상품 리뷰
 class Review(models.Model):
     product         = models.ForeignKey('product', on_delete=models.CASCADE)
     user            = models.ForeignKey('user.user', on_delete=models.CASCADE)
@@ -66,7 +61,6 @@ class Review(models.Model):
     class Meta:
         db_table = 'reviews'
 
-# 상품 상태 중간테이블
 class ReviewStatus(models.Model):
     review          = models.ForeignKey('product', on_delete=models.CASCADE)
     order           = models.ForeignKey('order.order', on_delete=models.CASCADE)
@@ -75,7 +69,6 @@ class ReviewStatus(models.Model):
         db_table = 'review_statuses'
 
 
-# 상품 문의
 class ProductInquiry(models.Model):
     product         = models.ForeignKey('product', on_delete=models.CASCADE)
     user            = models.ForeignKey('user.user', on_delete=models.CASCADE)
@@ -89,7 +82,6 @@ class ProductInquiry(models.Model):
     class Mete:
         db_table = 'product_inquiries'
 
-# 질문답변 상태
 class AnswerStatus(models.Model):
     name            = models.CharField(max_length=20)
 

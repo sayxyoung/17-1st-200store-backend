@@ -1,6 +1,5 @@
 from django.db import models
 
-# 주문
 class Order(models.Model):
     user            = models.ForeignKey('user.user', on_delete=models.CASCADE)
     product         = models.ForeignKey('product.product', on_delete=models.CASCADE)
@@ -15,7 +14,6 @@ class Order(models.Model):
     class Meta:
         db_table = 'orders'
 
-# 주문 상태
 class OrderStatus(models.Model):
     name        = models.CharField(max_length=20)
 
@@ -25,7 +23,6 @@ class OrderStatus(models.Model):
     class Meta:
         db_table = 'order_statuses'
 
-#카트
 class Cart(models.Model):
     order       = models.ForeignKey('order.order', on_delete=models.CASCADE)
     product     = models.ForeignKey('product.product', on_delete=models.CASCADE)
