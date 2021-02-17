@@ -1,15 +1,14 @@
 from django.db import models
-from django.db.models.fields.related import ForeignKey
 
 # 유저
 class User(models.Model):
-    user_id         = models.CharField(max_length=20)
-    user_password   = models.CharField(max_length=300)
-    user_name       = models.CharField(max_length=20)
+    account         = models.CharField(max_length=20)
+    password        = models.CharField(max_length=300)
+    name            = models.CharField(max_length=20)
     email           = models.EmailField(max_length=50)
     cell_phone      = models.CharField(max_length=20)
     home_phone      = models.CharField(max_length=20, null=True)
-    user_address    = models.CharField(max_length=300, null=True)
+    home_address    = models.CharField(max_length=300, null=True)
     phone_spam      = models.BooleanField(default=False)
     email_spam      = models.BooleanField(default=False)
     grade           = models.ForeignKey('grade', on_delete=models.CASCADE)
@@ -17,10 +16,10 @@ class User(models.Model):
     product         = models.ManyToManyField('product.product', through='recentlyview', related_name='recently_view')
     create_at       = models.DateTimeField(auto_now_add=True)
     update_at       = models.DateTimeField(auto_now=True)
-    total_price     = models.IntegerField(default=0)
+    total_price     = models.DecimalField(max_digits=18, decimal_places=2)
 
     def __str__(self):
-        return f'{self.user_name}'
+        return f'{self.name}'
 
     class Meta:
         db_table = 'users'
@@ -71,7 +70,7 @@ class UserCoupon(models.Model):
         db_table = 'user_coupons'
 
 # 배송지
-class address(models.Model):
+class Address(models.Model):
     user        = models.ForeignKey('user', on_delete=models.CASCADE)
     name        = models.CharField(max_length=20)
     to_person   = models.CharField(max_length=20)

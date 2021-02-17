@@ -5,8 +5,8 @@ class Product(models.Model):
     category        = models.ForeignKey('category', on_delete=models.CASCADE)
     name            = models.CharField(max_length=50)
     price           = models.DecimalField(max_digits=8, decimal_places=2)
-    stock           = models.IntegerField()
-    sale            = models.IntegerField()
+    stock           = models.PositiveIntegerField(default=0)
+    sale            = models.IntegerField(default=0)
     user            = models.ManyToManyField('user.user', through='productlike',related_name='product_like')
     create_at       = models.DateTimeField(auto_now_add=True)
     update_at       = models.DateTimeField(auto_now=True)
@@ -30,7 +30,7 @@ class Category(models.Model):
 # 상품 이미지
 class ProductImage(models.Model):
     product         = models.ForeignKey('product', on_delete=models.CASCADE)
-    image_url       = models.CharField(max_length=4000)
+    image_url       = models.URLField(max_length=4000)
 
     class Meta:
         db_table = 'product_images'
@@ -46,7 +46,7 @@ class ProductLike(models.Model):
 class ProductOption(models.Model):
     product         = models.ForeignKey('product', on_delete=models.CASCADE)
     name            = models.CharField(max_length=100)
-    stock           = models.IntegerField()
+    stock           = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f'{self.name}'
@@ -60,7 +60,7 @@ class Review(models.Model):
     user            = models.ForeignKey('user.user', on_delete=models.CASCADE)
     content         = models.CharField(max_length=4000)
     star_rating     = models.SmallIntegerField()
-    image_url       = models.CharField(max_length=4000)
+    image_url       = models.URLField(max_length=4000)
     create_at       = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -70,6 +70,9 @@ class Review(models.Model):
 class ReviewStatus(models.Model):
     review          = models.ForeignKey('product', on_delete=models.CASCADE)
     order           = models.ForeignKey('order.order', on_delete=models.CASCADE)
+
+    class Mets:
+        db_table = 'reviewstatuses'
 
 
 # 상품 문의
