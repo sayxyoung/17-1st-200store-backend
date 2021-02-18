@@ -5,8 +5,10 @@ class Product(models.Model):
     name            = models.CharField(max_length=50)
     price           = models.DecimalField(max_digits=8, decimal_places=2)
     stock           = models.PositiveIntegerField(default=0)
-    sale            = models.DecimalField(max_digits=5, decimal_places=3,default=0)
+    sale            = models.DecimalField(max_digits=5, decimal_places=2,default=0)
     user            = models.ManyToManyField('user.user', through='productlike',related_name='product_like')
+    image_url       = models.URLField(max_length=4000)
+    total_sales     = models.IntegerField()
     create_at       = models.DateTimeField(auto_now_add=True)
     update_at       = models.DateTimeField(auto_now=True)
 

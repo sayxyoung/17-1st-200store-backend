@@ -15,7 +15,7 @@ class User(models.Model):
     product         = models.ManyToManyField('product.product', through='recentlyview', related_name='recently_view')
     create_at       = models.DateTimeField(auto_now_add=True)
     update_at       = models.DateTimeField(auto_now=True)
-    total_price     = models.DecimalField(max_digits=18, decimal_places=2)
+    total_price     = models.DecimalField(max_digits=18, decimal_places=2, default=0)
 
     def __str__(self):
         return f'{self.name}'
@@ -69,7 +69,7 @@ class Address(models.Model):
     name        = models.CharField(max_length=20)
     to_person   = models.CharField(max_length=20)
     to_address  = models.CharField(max_length=300)
-    home_phone  = models.CharField(max_length=20)
+    home_phone  = models.CharField(max_length=20, null=True)
     cell_phone  = models.CharField(max_length=20)
     is_default  = models.BooleanField(default=False)
 
