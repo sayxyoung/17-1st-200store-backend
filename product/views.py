@@ -22,9 +22,8 @@ from .models import (
 #from utile              import login_decorator
 
 class ProductView(View):
-    def get(self, request, *args, **kwargs):
-        category_id = request.GET.get('category_id', None)
-        sorting = request.GET.get('sorting', None)
+    def get(self, request, category_id, sorting):
+        #sorting = request.GET.get('sorting', None)
         print(category_id)
 
         result = []
@@ -38,6 +37,7 @@ class ProductView(View):
                     'price'         : products[i].price,
                     'sale'          : products[i].sale,
                     'image_url'     : products[i].image_url,
+                    'category'      : products[i].category,
                    # 'product_likes' : products[i].
                 }for i in range(len(products))] 
             if sorting == 'IsNew':
