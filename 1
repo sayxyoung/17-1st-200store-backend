@@ -1,10 +1,10 @@
 import json
-import datetime          as dt
-from datetime            import datetime, timedelta
+import datetime as dt
+from datetime           import datetime, timedelta
 
 from django.http         import JsonResponse
 from django.views        import View
-from django.db.models    import Q
+# from django.db.models   import Q
 
 from .models import (
         Product,
@@ -22,10 +22,7 @@ from .models import (
 #from utile              import login_decorator
 
 class ProductView(View):
-    def get(self, request, *args, **kwargs):
-        category_id = request.GET.get('category_id', None)
-        sorting = request.GET.get('sorting', None)
-        print(category_id)
+    def get(self, request, category_id):
 
         result = []
 
@@ -38,13 +35,7 @@ class ProductView(View):
                     'price'         : products[i].price,
                     'sale'          : products[i].sale,
                     'image_url'     : products[i].image_url,
-                   # 'product_likes' : products[i].
                 }for i in range(len(products))] 
-            if sorting == 'IsNew':
-                result.order_by('create_at')
-            #elif sorting == 'IsBest':
-             #   result.order_by(
-
 #            print(result)
 
         else:
