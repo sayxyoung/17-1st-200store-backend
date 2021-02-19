@@ -7,7 +7,7 @@ class Order(models.Model):
     product         = models.ManyToManyField('product.product', through='cart', related_name='shopping_cart')
     create_at       = models.DateTimeField(auto_now_add=True)
     total_price     = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    is_confirm      = models.BooleanField(default=False)
+    is_confirmed    = models.BooleanField(default=False)
     serial_number   = models.CharField(max_length=50)
 
     class Meta:

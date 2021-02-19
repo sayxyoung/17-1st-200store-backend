@@ -37,8 +37,8 @@ class Point(models.Model):
     user            = models.ForeignKey('user', on_delete=models.CASCADE)
     content         = models.CharField(max_length=50)
     validity        = models.DateTimeField()
-    remaining_point = DecimalField(max_digits=8, decimal_places=2, default=0)
-    value           = DecimalField(max_digits=8, decimal_places=2, default=0)
+    remaining_point = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    value           = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     create_at       = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
