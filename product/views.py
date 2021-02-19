@@ -1,7 +1,7 @@
 import json
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from datetime from datetime, timedelta
+from datetime     import datetime, timedelta
 
 from django.views import View
 from django.http  import JsonResponse
@@ -67,9 +67,9 @@ class MainView(View):
         } for sale in sale_query]
 
         return JsonResponse({
-            'message'  : 'SUCCESS',
-            'status'   : 200 
-            'data'     : {
+            'message' : 'SUCCESS',
+            'status'  : 200, 
+            'data'    : {
                 'best' : best_list,
                 'new'  : new_list,
                 'sale' : sale_list 
