@@ -1,7 +1,8 @@
 from django.db import models
+from django.db.models.fields import DecimalField
 
 class User(models.Model):
-    account         = models.CharField(max_length=20)
+    account         = models.CharField(max_length=20, unique=True)
     password        = models.CharField(max_length=300)
     name            = models.CharField(max_length=20)
     email           = models.EmailField(max_length=50)
@@ -33,11 +34,12 @@ class Grade(models.Model):
         db_table = 'grades'
 
 class Point(models.Model):
-    user        = models.ForeignKey('user', on_delete=models.CASCADE)
-    content     = models.CharField(max_length=50)
-    validity    = models.DateTimeField()
-    is_used     = models.BooleanField(default=False)
-    create_at   = models.DateTimeField(auto_now_add=True)
+    user            = models.ForeignKey('user', on_delete=models.CASCADE)
+    content         = models.CharField(max_length=50)
+    validity        = models.DateTimeField()
+    remaining_point = DecimalField(max_digits=8, decimal_places=2, default=0)
+    value           = DecimalField(max_digits=8, decimal_places=2, default=0)
+    create_at       = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.content}'

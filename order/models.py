@@ -7,7 +7,7 @@ class Order(models.Model):
     product         = models.ManyToManyField('product.product', through='cart', related_name='shopping_cart')
     create_at       = models.DateTimeField(auto_now_add=True)
     total_price     = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    confirm         = models.BooleanField(default=False)
+    is_confirm      = models.BooleanField(default=False)
     serial_number   = models.CharField(max_length=50)
 
     class Meta:
@@ -27,7 +27,7 @@ class Cart(models.Model):
     product     = models.ForeignKey('product.product', on_delete=models.CASCADE)
     option      = models.CharField(max_length=100)
     quantity    = models.SmallIntegerField()
-    total_price = models.DecimalField(max_digits=8, decimal_places=2)
+    total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     class Meta:
         db_table = 'carts'
