@@ -2,6 +2,7 @@ import json
 
 from django.views import View
 from django.http  import JsonResponse
+from django.db    import transaction
 
 from .models      import MatchingReview, Review
 from order.models import Order
@@ -21,3 +22,32 @@ class ReviewView(View):
 
         return JsonResponse({'message':'SUCCUSS', 'date': reviews}, status=200)
 
+    def post(self, request):
+        data = json.loads(request.body)
+
+        try:
+            product_id = data['productId']
+            order_id   = data['orderId']
+
+            check_matching = MatchingReview.objects.filter(product_id=product_id, order_id=order_id)
+            if check_matching.exists():
+                return JsonResponse({'message':'ALREADY_HAVE_ITEM'}, status=400)
+            
+            with transaction.atomic():
+                review = Review.objects.create(
+                    prodcut_id  = product_id,
+                    user_id     = data['userId'],
+                    content     = data['content'],
+                    star_rating = data['starRating'],
+                    image_url   = data.get('image_url')
+                ).save()
+
+                MatchingReview.objects.create(
+                    reveiw   = reivew,
+                    order_id = order_id
+                ).save()
+
+            return JsonResponse({'message':'SUCCESS'}, status=200)
+
+        except KeyError:
+            return JsonResponse({'message':'KEY_ERROR'}, status=400)
