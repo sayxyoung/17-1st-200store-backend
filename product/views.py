@@ -70,10 +70,10 @@ class MainView(View):
 
         return JsonResponse({
             'message' : 'SUCCESS',
-            'status'  : 200, 
             'data'    : {
                 'best' : best_list,
                 'new'  : new_list,
                 'sale' : sale_list 
-            }
+            },
+            status=200
         })
