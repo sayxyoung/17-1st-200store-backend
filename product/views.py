@@ -9,17 +9,15 @@ from .models     import ProductLike, Product
 class ProductLikeView(View):
     def get(self, request, user_id):
         
-        products = ProductLike.objects.filter(user_id = user_id)
-        products = [{
-            'id'       : product.product.id,
-            'name'     : product.product.name,
-            'imageUrl' : product.product.image_url
-        } for product in products]
+        likes = ProductLike.objects.filter(user_id = user_id)
+        likes = [{
+            'id'       : like.product.id,
+            'name'     : like.product.name,
+            'imageUrl' : like.product.image_url,
+            'category' : like.product.category.id
+        } for like in likes]
 
-        # print(products)
-
-        return JsonResponse({'message':'SUCCESS', 'status' : 200, 'data'   : products
-        })
+        return JsonResponse({'message':'SUCCESS', 'status':200, 'data':likes})
     
     def post(self, request):
         data = json.loads(request.body)
@@ -27,6 +25,12 @@ class ProductLikeView(View):
         check_have = ProductLike.objects.get_or_create(user_id=data['userId'], product_id=data['productId'])
         if not check_have[1]: check_have[0].delete()
 
-        # 뿌리는것 까지 하기!
+        likes = ProductLike.objects.filter(user_id = data['userId'])
+        likes = [{
+            'id' : like.product.id,
+            'name' : like.product.name,
+            'imageUrl' : like.product.image_url,
+            'category' : like.product.category.id
+        } for like in likes]
 
-        return JsonResponse({'message':'SUCCESS', 'status' : 200})
+        return JsonResponse({'message':'SUCCESS', 'status':200, 'data':likes})
