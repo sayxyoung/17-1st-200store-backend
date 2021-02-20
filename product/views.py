@@ -1,72 +1,72 @@
 import json
-import datetime          as dt
 from datetime            import datetime, timedelta
 
 from django.http         import JsonResponse
 from django.views        import View
-from django.db.models    import Q
+#from django.db.models    import Q
 
 from .models import (
         Product,
         Category,
-        ProductImage,
-        ProductOption,
-        ProductLike,
-        Review,
-        ReviewStatus,
-        ProductInquiry,
-        AnswerStatus,
 )
 
-#from user.models        import User
-#from utile              import login_decorator
+def IsNew(products):
+    datetime_now = datetime.today() - timedelta(days=30)
+    return [products for item in products if item.create_at < datetime_now]
 
-class ProductView(View):
-    def get(self, request, category_id, sorting):
-        #sorting = request.GET.get('sorting', None)
-        print(category_id)
+def IsBest(products):
+    return products.order_by('total_sales')
 
-        result = []
+def IsSale(products):
+    return [products for item in products if item.sale > 0]
 
-        if category_id == 0:
-            products = Product.objects.all()
-            datetime_now = dt.datetime.today()
-            result = [
+def IsLowPrice(products):
+    return products.order_by('-price')
+
+def IsHighPrice(products):
+    return products.order_by('price')
+
+
+class ProductListView(View):
+    def get(self, request, **kwargs):
+
+        category_id = kwargs['category_id']
+
+        product_list = Product.objects.all().only('name').order_by('-total_sales') \
+        if category_id == 0 else Product.objects.filter(category_id=\
+        category_id).only('name').order_by('-total_sales')
+        
+        products = [
                 {
-                    'name'          : products[i].name,
-                    'price'         : products[i].price,
-                    'sale'          : products[i].sale,
-                    'image_url'     : products[i].image_url,
-                    'category'      : products[i].category,
-                   # 'product_likes' : products[i].
-                }for i in range(len(products))] 
-            if sorting == 'IsNew':
-                result.order_by('create_at')
-            #elif sorting == 'IsBest':
-             #   result.order_by(
+                    'id'            : item.id,
+                    'name'          : item.name,
+                    'price'         : item.price,
+                    'sale'          : item.sale,
+                    'imageUrl'      : item.image_url,
+                    'category'      : item.category,
+                    'createAt'      : item.create_at,
+                    'totalSales'    : item.total_sales,
+                }for item in product_list] 
+#        print(products)
+#        if kwargs['sorting']:
+#            sorting = kwargs['sorting']
+#            if sorting == 'isNew':
+#                new = IsNew(products)
+#            elif sorting == 'isBest':
+#                best = IsBest(products) 
+#            elif sorting == 'isSale':
+#                best = IsSale(products) 
+#            elif sorting == 'isLowPrice':
+#                lowprice = IsLowPrice(products)
+#            elif sorting == 'isHighPrice':
+#                highprice = IsHighPrice(products)
+#            else :
+#                return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
+#
+        return JsonResponse({'message' : 'SUCCESS'}, status=200)
 
-#            print(result)
-
-        else:
-            products = Product.objects.filter(category_id = category_id)
-            result = [
-                {
-                    'name'          : products[i].name,
-                    'price'         : products[i].price,
-                    'sale'          : products[i].sale,
-                    'image_url'     : products[i].image_url,
-                }for i in range(len(products))]
-            print(result)
-
+class ProductDetailView(View):
+    def get(self, request):
         return JsonResponse({'message' : 'SUCCESS'}, status=200)
 
 
-#class ProductDetailView(View):
-#    def get(self, requset):
-#        data = Json.loads(request.body)
-#
-#        product = data['name']
-#
-#        if Product.objects.get(id = product.id).exists()
-#           
-            
