@@ -64,7 +64,7 @@ class Review(models.Model):
         db_table = 'reviews'
 
 class MatchingReview(models.Model):
-    review          = models.ForeignKey('product', on_delete=models.CASCADE)
+    review          = models.ForeignKey('review', on_delete=models.CASCADE)
     order           = models.ForeignKey('order.order', on_delete=models.CASCADE)
     product         = models.ForeignKey('product.product', on_delete=models.CASCADE, related_name='matching_product')
 
