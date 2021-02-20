@@ -9,8 +9,6 @@ from order.models import Order
 
 class ReviewView(View):
     def get(self, request, product_id):
-        data = json.loads(request.body)
-
         reviews = Review.objects.filter(product_id=product_id)
         reviews = [{
             'user'       : review.user.account,
