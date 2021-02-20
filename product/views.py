@@ -2,6 +2,8 @@ import json
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from datetime     import datetime, timedelta
+from pytz         import utc
+utc.localize(datetime.utcnow())
 
 from django.views import View
 from django.http  import JsonResponse
@@ -10,7 +12,7 @@ from .models      import Product # image_url 추가하면 구성해주기
 from order.models import Order
 
 def isNew(create_at, compare_date):
-    return True if create_at > compare_date else False
+    return True if compare_date < create_at  else False
 
 def checkBestList():
     best_query = Product.objects.all().only('id').order_by('-total_sales')[:20]
@@ -24,7 +26,7 @@ def isSale(sale):
 
 class MainView(View):
     def get(self, request):
-        compare_date = datetime.today() + datetime.timedelta(days=-30)
+        compare_date = utc.localize(datetime.utcnow()) + timedelta(days=-30)
         checkBest    = checkBestList()
 
         best_query = Product.objects.all().only('id', 'name', 'image_url', 'category', 'price', 'sale','create_at').order_by('-total_sales')[:4]
@@ -32,11 +34,11 @@ class MainView(View):
             'id'       : best.id,
             'name'     : best.name,
             'imageUrl' : best.image_url,
-            'category' : bset.category_id,
+            'category' : best.category.id,
             'price'    : best.price,
             'sale'     : best.sale,
             'isNew'    : isNew(best.create_at, compare_date),
-            'isBest'   : isBest(checkBestList, best.id),
+            'isBest'   : isBest(checkBest, best.id),
             'isSale'   : isSale(best.sale)
         } for best in best_query]
 
@@ -45,11 +47,11 @@ class MainView(View):
             'id'       : new.id,
             'name'     : new.name,
             'imageUrl' : new.image_url,
-            'category' : new.category_id,
+            'category' : new.category.id,
             'price'    : new.price,
             'sale'     : new.sale,
-            'isNew'    : isNew(best.create_at, compare_date),
-            'isBest'   : isBest(checkBestList, new.id),
+            'isNew'    : isNew(new.create_at, compare_date),
+            'isBest'   : isBest(checkBest, new.id),
             'isSale'   : isSale(new.sale)
         } for new in new_query]
 
@@ -58,11 +60,11 @@ class MainView(View):
             'id'       : sale.id,
             'name'     : sale.name,
             'imageUrl' : sale.image_url,
-            'category' : sale.category_id,
+            'category' : sale.category.id,
             'price'    : sale.price,
             'sale'     : sale.sale,
-            'isNew'    : isNew(best.create_at, compare_date),
-            'isBest'   : isBest(checkBestList, sale.id),
+            'isNew'    : isNew(sale.create_at, compare_date),
+            'isBest'   : isBest(checkBest, sale.id),
             'isSale'   : isSale(sale.sale)
         } for sale in sale_query]
 
