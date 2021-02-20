@@ -17,7 +17,7 @@ class ProductLikeView(View):
             'category' : like.product.category.id
         } for like in likes]
 
-        return JsonResponse({'message':'SUCCESS', 'status':200, 'data':likes})
+        return JsonResponse({'message':'SUCCESS', 'data':likes}, status=200)
     
     def post(self, request):
         data = json.loads(request.body)
@@ -33,4 +33,4 @@ class ProductLikeView(View):
             'category' : like.product.category.id
         } for like in likes]
 
-        return JsonResponse({'message':'SUCCESS', 'status':200, 'data':likes})
+        return JsonResponse({'message':'SUCCESS', 'data':likes}, status=200)
