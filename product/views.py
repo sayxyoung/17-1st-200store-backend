@@ -1,9 +1,6 @@
 import json
-import os, sys
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from datetime     import datetime, timedelta
 from pytz         import utc
-utc.localize(datetime.utcnow())
 
 from django.views import View
 from django.http  import JsonResponse
@@ -74,6 +71,4 @@ class MainView(View):
                 'best' : best_list,
                 'new'  : new_list,
                 'sale' : sale_list 
-            },
-            status=200
-        })
+            }}, status=200)
