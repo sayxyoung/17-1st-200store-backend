@@ -34,7 +34,7 @@ def is_sale(sale):
 class ProductListView(View):
     def get(self, request, category_id):
         
-        sorting = request.GET.get('sorting', None)
+        sorting = request.GET.get('sorting', '-total_sales')
         best_list = check_best_list()
         compare_date = timezone.localtime() - timedelta(days=30)
 
@@ -56,7 +56,10 @@ class ProductListView(View):
                     'isSale'        : is_sale(item.sale)
                 }for item in product_list] 
 
-        return JsonResponse({'message' : 'SUCCESS'}, status=200)
+        return JsonResponse({'message' : 'SUCCESS',
+                            'data' : {
+                                    'products' : products, 
+                                }}, status=200)
 
 class ProductDetailView(View):
     def get(self, request, product_id):
@@ -95,7 +98,7 @@ class ProductDetailView(View):
         return JsonResponse({'message' : 'SUCCESS',
                              'data' : {
                                  'product'  : product_view,
-                                 'Images'   : product_images,
+                                 'images'   : product_images,
                                  'review'   : product_reviews,
                             }}, status=200)
 
