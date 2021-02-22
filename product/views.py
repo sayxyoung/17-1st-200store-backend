@@ -22,13 +22,13 @@ def is_sale(sale):
     return True if sale > 0 else False
 
 class MainView(View):
-    BEST_COUNT = 4
-    NEW_COUNT  = 8
-    SALE_COUNT = 8
-
     def get(self, request):
         compare_date = utc.localize(datetime.utcnow()) + timedelta(days=-30)
         checkBest    = check_bestList()
+
+        BEST_COUNT = 4
+        NEW_COUNT  = 8
+        SALE_COUNT = 8
 
         best_query = Product.objects.all().only('id', 'name', 'image_url', 'category', 'price', 'sale','create_at').order_by('-total_sales')[:BEST_COUNT]
         best_list  = [{
