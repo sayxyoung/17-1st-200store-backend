@@ -69,7 +69,7 @@ class MatchingReview(models.Model):
     product         = models.ForeignKey('product.product', on_delete=models.CASCADE, related_name='matching_product')
 
     class Meta:
-        db_table = 'matching_reivews'
+        db_table = 'matching_reviews'
 
 
 class ProductInquiry(models.Model):
