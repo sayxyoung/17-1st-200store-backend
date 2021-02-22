@@ -30,7 +30,7 @@ class MainView(View):
         NEW_COUNT  = 8
         SALE_COUNT = 8
 
-        best_query = Product.objects.all().only('id', 'name', 'image_url', 'category', 'price', 'sale','create_at').order_by('-total_sales')[:BEST_COUNT]
+        best_query = Product.objects.all().order_by('-total_sales')[:BEST_COUNT]
         best_list  = [{
             'id'       : best.id,
             'name'     : best.name,
@@ -43,7 +43,7 @@ class MainView(View):
             'isSale'   : is_sale(best.sale)
         } for best in best_query]
 
-        new_query  = Product.objects.all().only('id', 'name', 'image_url', 'category', 'price', 'sale','create_at').order_by('-sale')[:NEW_COUNT]
+        new_query  = Product.objects.all().order_by('-sale')[:NEW_COUNT]
         new_list   = [{
             'id'       : new.id,
             'name'     : new.name,
@@ -56,7 +56,7 @@ class MainView(View):
             'isSale'   : is_sale(new.sale)
         } for new in new_query]
 
-        sale_query = Product.objects.filter(sale__gt=0).only('id', 'name', 'image_url', 'category', 'price', 'sale','create_at')[:SALE_COUNT]
+        sale_query = Product.objects.filter(sale__gt=0)[:SALE_COUNT]
         sale_list  = [{
             'id'       : sale.id,
             'name'     : sale.name,
