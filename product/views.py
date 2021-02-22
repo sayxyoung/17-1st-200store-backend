@@ -32,8 +32,9 @@ def is_sale(sale):
     return True if sale > 0 else False
 
 class ProductListView(View):
-    def get(self, request, category_id):
+    def get(self, request):
         
+        category_id = int(request.GET.get('category_id', 0))
         sorting = request.GET.get('sorting', '-total_sales')
         best_list = check_best_list()
         compare_date = timezone.localtime() - timedelta(days=30)
@@ -41,7 +42,7 @@ class ProductListView(View):
         product_list = Product.objects.all().order_by(sorting) \
             if category_id == 0 else Product.objects.filter(category_id=\
             category_id).order_by(sorting)
-        
+
         products = [
                 {
                     'id'            : item.id,
