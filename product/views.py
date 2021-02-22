@@ -68,9 +68,8 @@ class ProductDetailView(View):
             return JsonResponse({'message' : 'DOSE_NOT_EXISTS_PRODUCT'}, status=401)
 
         product = Product.objects.get(id = product_id)
-        reviews = Review.objects.filter(product_id = product_id)
-        images  = ProductImage.objects.filter(product_id = product_id)
-        inquirys = ProductInquiry.objects.filter(product_id = product_id)
+        reviews = product.review_set.all()
+        images  = product.productimage_set.all()
 
         product_view = [
             {
