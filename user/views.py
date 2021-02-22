@@ -8,7 +8,7 @@ import json
 import jwt
 import re
 
-from django.http import JsonResponse
+from django.http  import JsonResponse
 from django.views import View
 
 from my_settings import ALGORITHM
@@ -25,33 +25,31 @@ EMAIL_EXPRESSION      = re.compile('^[^-_.]*[0-9]+[@]{1}[a-zA-Z0-9]+[.]{1}[a-zA-
 class SignUpView(View):
     def post(self, request):
         try:
-            data = json.loads(request.body)
-            account      = data.get('account', None)
-            password     = data.get('password', None)
-            name         = data.get('name', None)
-            email        = data.get('email', None)
-            cell_phone   = data.get('cell_phone', None)
+            data         = json.loads(request.body)
+            account      = data['account']
+            password     = data['password']
+            name         = data['name']
+            email        = data['email']
+            cell_phone   = data['cell_phone']
             home_phone   = data.get('home_phone', None)
             home_address = data.get('home_address', None)
             phone_spam   = data.get('phone_spam', False)
             email_spam   = data.get('email_spam', False)
 
-            if not (account and password and name and email and cell_phone):
-                return JsonResponse({'message': 'BadRequest'}, status=400)
-
             if not PASSWORD_EXPRESSION.search(password):
-                return JsonResponse({'message': 'InvalidPassword'}, status=400)
+                return JsonResponse({'message': 'INVALID_PASSWORD'}, status=400)
 
             if not EMAIL_EXPRESSION.search(email):
-                return JsonResponse({'message': 'InvalidEmail'}, status=400)
+                return JsonResponse({'message': 'INVALID_EMAIL'}, status=400)
 
             if not CELL_PHONE_EXPRESSION.search(cell_phone):
-                return JsonResponse({'message': 'InvalidCellphone'}, status=400)
+                return JsonResponse({'message': 'INVALID_CELLPHONE'}, status=400)
 
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             decoded_hashed_password = hashed_password.decode('utf-8')
 
-            initial_grade = Grade.objects.get(id=1)
+
+            initial_grade = Grade.objects.get(name="일반회원그룹")
             user = User.objects.create(
                 account    = account,
                 password   = decoded_hashed_password,
@@ -63,7 +61,7 @@ class SignUpView(View):
                 email_spam = email_spam,
                 grade      = initial_grade,
             )
-            coupon = Coupon.objects.get(id=1)
+            coupon = Coupon.objects.get(name="웰컴 쿠폰")
             welcome_coupon_validity = user.create_at + timedelta(days=30)
             user_coupon = UserCoupon.objects.create(
                 user_id   = user.id,
@@ -71,7 +69,10 @@ class SignUpView(View):
                 validity  = welcome_coupon_validity,
             )
 
-            return JsonResponse({'message': 'Success'}, status=200)
+            return JsonResponse({'message': 'SUCCESS'}, status=200)
 
         except JSONDecodeError:
-            return JsonResponse({'message': 'BadRequest'}, status=400)
+            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'BAD_REQUEST'})
