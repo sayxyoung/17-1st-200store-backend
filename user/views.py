@@ -24,6 +24,10 @@ EMAIL_EXPRESSION      = re.compile('^[^-_.]*[0-9]+[@]{1}[a-zA-Z0-9]+[.]{1}[a-zA-
 
 class SignUpView(View):
     def post(self, request):
+
+        GENERAL_MEMBER_GROUP = "일반회원그룹"
+        WELCOME_COUPON       = "웰컴 쿠폰"
+
         try:
             data         = json.loads(request.body)
             account      = data['account']
@@ -49,7 +53,7 @@ class SignUpView(View):
             decoded_hashed_password = hashed_password.decode('utf-8')
 
 
-            initial_grade = Grade.objects.get(name="일반회원그룹")
+            initial_grade = Grade.objects.get(name=GENERAL_MEMBER_GROUP)
             user = User.objects.create(
                 account    = account,
                 password   = decoded_hashed_password,
@@ -61,7 +65,7 @@ class SignUpView(View):
                 email_spam = email_spam,
                 grade      = initial_grade,
             )
-            coupon = Coupon.objects.get(name="웰컴 쿠폰")
+            coupon = Coupon.objects.get(name=WELCOME_COUPON)
             welcome_coupon_validity = user.create_at + timedelta(days=30)
             user_coupon = UserCoupon.objects.create(
                 user_id   = user.id,
