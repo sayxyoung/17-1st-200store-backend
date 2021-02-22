@@ -1,7 +1,7 @@
 import json
 from datetime     import datetime, timedelta
-from pytz         import utc
 
+from django.utils import timezone
 from django.views import View
 from django.http  import JsonResponse
 
@@ -23,7 +23,7 @@ def is_sale(sale):
 
 class MainView(View):
     def get(self, request):
-        compare_date = utc.localize(datetime.utcnow()) + timedelta(days=-30)
+        compare_date = compare_date = timezone.localtime() - timedelta(days=30) + timedelta(days=-30)
         checkBest    = check_bestList()
 
         BEST_COUNT = 4
