@@ -1,10 +1,10 @@
 import json
 from datetime            import datetime, timedelta
-from pytz                import utc
 
 from django.http         import JsonResponse
 from django.views        import View
 from django.db.models    import Q
+from django.utils        import timezone
 
 from .models import (
         Product,
@@ -18,44 +18,28 @@ from .models import (
         AnswerStatus,
 )
 
-def isNew(create_at, compare_date):
+def is_new(create_at, compare_date):
     return True if create_at > compare_date else False
 
-def checkBestList():
-    best_query = Product.objects.all().order_by('-total_sales')[:10]
+def check_best_list():
+    best_query = Product.objects.all().order_by('total_sales')[:10]
     return [best.id for best in best_query]
-    product_list = Product.objects.all().order_by('total_sales')[:10] \
-        if category_id == 0 else Product.objects.filter(category_id=\
-        category_id).order_by(sorting)
 
-def isBest(checkList, id):
+def is_best(checkList, id):
     return True if id in checkList else False 
 
-def isSale(sale):
+def is_sale(sale):
     return True if sale > 0 else False
 
-
 class ProductListView(View):
-    def get(self, request, **kwargs):
+    def get(self, request, category_id):
+        
+        print(category_id)
+        sorting = request.GET.get('sorting', None)
+        print(sorting)
 
-        best_list = checkBestList()
-        category_id = kwargs['category_id']
-        compare_date = utc.localize(datetime.utcnow()) - timedelta(days=30)
-
-        if kwargs.get('sorting'):
-            sorting = kwargs['sorting']
-            if kwargs['sorting'] == 'isBest':
-                sorting = '\'-total_sales\''
-            elif kwargs['sorting'] == 'isNew':
-                sorting = '-create_at'
-            elif kwargs['sorting'] == 'isNew':
-                sorting = '\'-sale\''
-            elif kwargs['sorting'] == 'isLowPrice':
-                sorting = '\'price\''
-            elif kwargs['sorting'] == 'isHighPrice':
-                sorting = '\'-price\''
-        else :
-            sorting = '-total_sales'
+        best_list = check_best_list()
+        compare_date = timezone.localtime() - timedelta(days=30)
 
         product_list = Product.objects.all().order_by(sorting) \
             if category_id == 0 else Product.objects.filter(category_id=\
@@ -70,15 +54,12 @@ class ProductListView(View):
                     'stock'         : item.stock,
                     'imageUrl'      : item.image_url,
                     'category'      : item.category.id,
-                    'isNew'         : isNew(item.create_at, compare_date),
-                    'isBest'        : isBest(best_list, item.id),
-                    'isSale'        : isSale(item.sale)
+                    'isNew'         : is_new(item.create_at, compare_date),
+                    'isBest'        : is_best(best_list, item.id),
+                    'isSale'        : is_sale(item.sale)
                 }for item in product_list] 
 
-        print(products)
-
         return JsonResponse({'message' : 'SUCCESS'}, status=200)
-
 
 class ProductDetailView(View):
     def get(self, request, product_id):
@@ -110,29 +91,15 @@ class ProductDetailView(View):
                     'id'             : review.id,
                     'content'        : review.content,
                     'starRating'     : review.star_rating,
-#                    'imageUrl'       : review.image_url,
                     'createAt'       : review.create_at,
                     'userId'         : review.user_id, 
             } for review in reviews]
-#        product_inquirys = [
-#            {
-#                    'id'             : inquiry.id,
-#                    'title'          : inquiry.title,
-#                    'content'        : inquiry.content,
-#                    'answerTitle'    : inquiry.answer_title,
-#                    'answerContent'  : inquiry.answer_content,
-#                    'createAt'       : inquiry.create_at,
-#                    'answerStatusId' : inquiry.answer_status_id,
-#                    'productId'      : inquiry.product_id,
-#                    'user_id'        : inquiry.user_id,
-#            } for inquiry in inquirys]
-#         
+
         return JsonResponse({'message' : 'SUCCESS',
                              'data' : {
                                  'product'  : product_view,
                                  'Images'   : product_images,
                                  'review'   : product_reviews,
-#                                 'inquirts' : product_inquirys
                             }}, status=200)
 
 
