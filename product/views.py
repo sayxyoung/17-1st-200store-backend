@@ -34,7 +34,7 @@ class ReviewView(View):
             with transaction.atomic():
                 review = Review.objects.create(
                     product_id  = product_id,
-                    user_id     = data['userId'],
+                    user_id     = 1,
                     content     = data['content'],
                     star_rating = data['starRating'],
                     image_url   = data['imageUrl'] if data.get('image_url') else 'none'
@@ -44,9 +44,7 @@ class ReviewView(View):
                     review     = review,
                     order_id   = order_id,
                     product_id = product_id
-                ).save()
-
-                review.save()
+                )
 
             return JsonResponse({'message':'SUCCESS'}, status=200)
 
