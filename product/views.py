@@ -43,8 +43,7 @@ class ProductListView(View):
             if category_name is None else Product.objects.filter(category__name =\
             category_name).order_by(sorting)
 
-        products = [
-               {
+        products = [{
                     'id'         : item.id,
                     'name'       : item.name,
                     'price'      : item.price,
@@ -69,22 +68,21 @@ class ProductDetailView(View):
         images  = product.productimage_set.all()
 
         product_view = {
-                    'id'        : product.id,
-                    'name'      : product.name,
-                    'price'     : product.price,
-                    'sale'      : product.sale,
-                    'stock'     : product.stock,
-                    'imageUrl'  : product.image_url,
-                    'imageUrls' : [image.image_url for image in images],
-                    'reviews'   : [
-                                   {
-                                    'id'         : review.id,
-                                    'reviewTitle': review.title,
-                                    'content'    : review.content,
-                                    'starRating' : review.star_rating,
-                                    'createAt'   : review.create_at,
-                                    'userId'     : review.user_id
-                                   } for review in reviews]
+                    'id'          : product.id,
+                    'name'        : product.name,
+                    'price'       : product.price,
+                    'sale'        : product.sale,
+                    'stock'       : product.stock,
+                    'thumbnailUrl': product.image_url,
+                    'imageUrls'   : [image.image_url for image in images],
+                    'reviews'     : [{
+                                        'id'         : review.id,
+                                        'reviewTitle': review.title,
+                                        'content'    : review.content,
+                                        'starRating' : review.star_rating,
+                                        'createAt'   : review.create_at,
+                                        'userId'     : review.user_id
+                                     } for review in reviews]
         }
         return JsonResponse({'data' : {
                                  'product'  : product_view,
@@ -137,4 +135,3 @@ class ReviewView(View):
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
         except IntegrityError:
             return JsonResponse({'message':'INTEGERITY_ERROR'}, status=400)
-
