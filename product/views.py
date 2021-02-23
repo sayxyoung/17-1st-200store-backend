@@ -13,7 +13,6 @@ from .models import (
         ProductImage,
         ProductLike,
         Review,
-        ReviewStatus,
 )
 
 from .models             import MatchingReview, Review
@@ -80,6 +79,7 @@ class ProductDetailView(View):
                     'reviews'   : [
                                    {
                                     'id'         : review.id,
+                                    'reviewTitle': review.title,
                                     'content'    : review.content,
                                     'starRating' : review.star_rating,
                                     'createAt'   : review.create_at,
