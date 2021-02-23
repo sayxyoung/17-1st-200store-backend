@@ -6,6 +6,7 @@ from django.db    import transaction, IntegrityError
 
 from .models      import MatchingReview, Review
 from order.models import Order
+from utils         import login_decorator
 
 class ReviewView(View):
     def get(self, request, product_id):
@@ -20,12 +21,13 @@ class ReviewView(View):
 
         return JsonResponse({'message':'SUCCUSS', 'date': reviews}, status=200)
 
+    @login_decorator
     def post(self, request):
         data = json.loads(request.body)
 
         try:
-            product_id = data['productId']
-            order_id   = data['orderId']
+            product_id = int(data['productId'])
+            order_id   = int(data['orderId'])
 
             check_matching = MatchingReview.objects.filter(product_id=product_id, order_id=order_id)
             if check_matching.exists():
@@ -34,7 +36,7 @@ class ReviewView(View):
             with transaction.atomic():
                 review = Review.objects.create(
                     product_id  = product_id,
-                    user_id     = 1,
+                    user_id     = request.user.id,
                     content     = data['content'],
                     star_rating = data['starRating'],
                     image_url   = data['imageUrl'] if data.get('image_url') else 'none'
@@ -50,7 +52,5 @@ class ReviewView(View):
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
-        except TypeError:
-            return JsonResponse({'message':'TYPE_ERROR'}, status=400)
         except IntegrityError:
             return JsonResponse({'message':'INTEGERITY_ERROR'}, status=400)
