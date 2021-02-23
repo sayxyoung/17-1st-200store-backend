@@ -353,3 +353,5 @@ my_settings.py
 *.CSV
 
 200store_user.py
+
+.idea
