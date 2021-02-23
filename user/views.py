@@ -1,7 +1,9 @@
-<<<<<<< HEAD
 import bcrypt
 import json
 import jwt
+import re
+from datetime     import datetime
+from datetime     import timedelta
 from json         import JSONDecodeError
 from jwt          import DecodeError
 
@@ -10,7 +12,14 @@ from django.views import View
 
 from my_settings  import ALGORITHM
 from my_settings  import SECRET_KEY
+from user.models  import Coupon
+from user.models  import Grade
 from user.models  import User
+from user.models  import UserCoupon
+
+CELL_PHONE_EXPRESSION = re.compile('^[0-9]{3}\-?[0-9]{4}\-?[0-9]{4}$')
+EMAIL_EXPRESSION      = re.compile('^[^-_.]*[0-9]+[@]{1}[a-zA-Z0-9]+[.]{1}[a-zA-Z]{2,3}$')
+PASSWORD_EXPRESSION   = re.compile('^(?=.*[a-z])(?=.*[A-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$')
 
 class SignInView(View):
     def post(self, request):
@@ -31,37 +40,17 @@ class SignInView(View):
             access_token = jwt.encode({'user_pk': user.pk}, SECRET_KEY, algorithm=ALGORITHM)
 
             return JsonResponse({'message': 'SUCCESS', 'accessToken': access_token}, status=200)
-=======
-from datetime import datetime
-from datetime import timedelta
-from json     import JSONDecodeError
-from jwt      import DecodeError
 
-import bcrypt
-import json
-import jwt
-import re
+        except JSONDecodeError:
+            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
-from django.http  import JsonResponse
-from django.views import View
-
-from my_settings import ALGORITHM
-from my_settings import SECRET_KEY
-from user.models import Coupon
-from user.models import Grade
-from user.models import User
-from user.models import UserCoupon
-
-CELL_PHONE_EXPRESSION = re.compile('^[0-9]{3}\-?[0-9]{4}\-?[0-9]{4}$')
-PASSWORD_EXPRESSION   = re.compile('^(?=.*[a-z])(?=.*[A-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$')
-EMAIL_EXPRESSION      = re.compile('^[^-_.]*[0-9]+[@]{1}[a-zA-Z0-9]+[.]{1}[a-zA-Z]{2,3}$')
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
 class SignUpView(View):
     def post(self, request):
-
         GENERAL_MEMBER_GROUP = "일반회원그룹"
         WELCOME_COUPON       = "웰컴 쿠폰"
-
         try:
             data         = json.loads(request.body)
             account      = data['account']
@@ -85,7 +74,6 @@ class SignUpView(View):
 
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             decoded_hashed_password = hashed_password.decode('utf-8')
-
 
             initial_grade = Grade.objects.get(name=GENERAL_MEMBER_GROUP)
             user = User.objects.create(
@@ -112,6 +100,8 @@ class SignUpView(View):
         except JSONDecodeError:
             return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
-        except user.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+        except KeyError:
+            return JsonResponse({'message': 'BAD_REQUEST'},status=400)
 
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
