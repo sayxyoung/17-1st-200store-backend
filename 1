@@ -71,16 +71,20 @@ class ProductDetailView(View):
                     'sale'      : product.sale,
                     'stock'     : product.stock,
                     'imageUrl'  : product.image_url,
-                    'imageUrls' : [image.image_url for image in images],
-                    'reviews'   : [
-                                   {
-                                    'id'         : review.id,
-                                    'content'    : review.content,
-                                    'starRating' : review.star_rating,
-                                    'createAt'   : review.create_at,
-                                    'userId'     : review.user_id
-                                   } for review in reviews]
-        }
+                    'imageUrls' : [image.image_url for image in images]
+                    'reviews'   : [{content,starRating,createAt,userId} for review in reviews]
+            }
+#        product_reviews = [
+#            {
+#                    'id'        : review.id,
+#                    'content'   : review.content,
+#                    'starRating': review.star_rating,
+#                    'createAt'  : review.create_at,
+#                    'userId'    : review.user_id, 
+#            } for review in reviews]
+#
         return JsonResponse({'data' : {
                                  'product'  : product_view,
+                                 'review'   : product_reviews,
                             }}, status=200)
+
