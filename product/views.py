@@ -7,10 +7,9 @@ from user.models import User
 from .models     import ProductLike, Product
 
 class ProductLikeView(View):
-    def get(self, request, user_id):
+    def get(self, request):
         
-        # user_id -> login decorator를 받아서 하기
-        likes = ProductLike.objects.filter(user_id = user_id)
+        likes = ProductLike.objects.filter(user_id = request.user.id)
         likes = [{
             'id'       : like.product.id,
             'name'     : like.product.name,
@@ -20,10 +19,11 @@ class ProductLikeView(View):
 
         return JsonResponse({'message':'SUCCESS', 'data':likes}, status=200)
     
+    @login_decorator
     def post(self, request):
         data = json.loads(request.body)
 
-        check_have  = ProductLike.objects.get_or_create(user_id=data['userId'], product_id=data['productId'])
+        check_have  = ProductLike.objects.get_or_create(user_id=request.user.id, product_id=data['productId'])
         have_like   = check_have[0]
         is_have_like = check_have[1]
         
