@@ -5,8 +5,10 @@ from django.views   import View
 
 from order.models   import Order, Cart
 from product.models import MatchingReview
+from utils          import login_decorator
 
 class OrderListView(View):
+    @login_decorator
     def get(self, request):
         data   = json.loads(request.body)
         orders = Order.objects.filter(user_id=data['userId']) # decorator 되면 거기서 받아오기
@@ -22,7 +24,7 @@ class OrderListView(View):
                 'name'          : cart.product.name,
                 'totalPrice'    : cart.total_price,
                 'quantity'      : cart.quantity,
-                'productStatus' : 2,  # cart.status (구매확정)
+                'productStatus' : cart.status,
                 'isReview'      : True if is_review.exists() else False
             } for cart in carts]
 
