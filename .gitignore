@@ -354,3 +354,5 @@ zsdoc/data
 my_settings.py
 
 *.CSV
+
+.idea
