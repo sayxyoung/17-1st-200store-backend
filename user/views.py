@@ -55,7 +55,7 @@ class SignUpView(View):
             password     = data['password']
             name         = data['name']
             email        = data['email']
-            cell_phone   = data['cell_phone']
+            cell_phone   = data['cell_phone']
             home_phone   = data.get('home_phone', None)
             home_address = data.get('home_address', None)
             phone_spam   = data.get('phone_spam', False)
