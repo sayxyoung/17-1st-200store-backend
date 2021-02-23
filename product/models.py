@@ -59,6 +59,7 @@ class Review(models.Model):
     star_rating     = models.SmallIntegerField()
     image_url       = models.URLField(max_length=4000)
     create_at       = models.DateTimeField(auto_now_add=True)
+    title           = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'reviews'

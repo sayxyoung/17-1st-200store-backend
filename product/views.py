@@ -37,6 +37,7 @@ class ReviewView(View):
                 review = Review.objects.create(
                     product_id  = product_id,
                     user_id     = request.user.id,
+                    title       = data['title'],
                     content     = data['content'],
                     star_rating = data['starRating'],
                     image_url   = data['imageUrl'] if data.get('image_url') else 'none'
