@@ -59,16 +59,18 @@ class Review(models.Model):
     star_rating     = models.SmallIntegerField()
     image_url       = models.URLField(max_length=4000)
     create_at       = models.DateTimeField(auto_now_add=True)
+    title           = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'reviews'
 
-class ReviewStatus(models.Model):
-    review          = models.ForeignKey('product', on_delete=models.CASCADE)
+class MatchingReview(models.Model):
+    review          = models.ForeignKey('review', on_delete=models.CASCADE)
     order           = models.ForeignKey('order.order', on_delete=models.CASCADE)
+    product         = models.ForeignKey('product.product', on_delete=models.CASCADE, related_name='matching_product')
 
-    class Mets:
-        db_table = 'review_statuses'
+    class Meta:
+        db_table = 'matching_reviews'
 
 
 class ProductInquiry(models.Model):
@@ -81,7 +83,7 @@ class ProductInquiry(models.Model):
     answer_status   = models.ForeignKey('answerstatus', on_delete=models.CASCADE)
     create_at       = models.DateTimeField(auto_now_add=True)
 
-    class Mete:
+    class Meta:
         db_table = 'product_inquiries'
 
 class AnswerStatus(models.Model):
