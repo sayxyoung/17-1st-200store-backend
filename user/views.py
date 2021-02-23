@@ -7,16 +7,14 @@ import jwt
 from django.http  import JsonResponse
 from django.views import View
 
-from my_settings import ALGORITHM
-from my_settings import SECRET_KEY
-from user.models import User
-
+from my_settings  import ALGORITHM
+from my_settings  import SECRET_KEY
+from user.models  import User
 
 class SignInView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-
             account  = data['account']
             password = data['password']
 
