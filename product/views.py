@@ -17,7 +17,7 @@ def check_bestList():
     return [best.id for best in best_query]
 
 def is_best(checkList, id):
-    return True if id in checkList else False 
+    return id in checkList
 
 def is_sale(sale):
     return sale > 0
