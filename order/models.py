@@ -28,7 +28,13 @@ class Cart(models.Model):
     option      = models.CharField(max_length=100)
     quantity    = models.SmallIntegerField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    status      = models.ForeignKey('order.cartstatus', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'carts'
 
+class CartStatus(models.Model):
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'cart_statuses'
