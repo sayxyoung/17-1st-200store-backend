@@ -16,7 +16,7 @@ class ProductLikeView(View):
             'name'     : like.product.name,
             'imageUrl' : like.product.image_url,
             'category' : like.product.category.id
-        } for like in likes]
+        } for like in likes]g
 
         return JsonResponse({'message':'SUCCESS', 'data':likes}, status=200)
     
