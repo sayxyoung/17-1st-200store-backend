@@ -1,8 +1,8 @@
-from json     import JSONDecodeError
-from jwt      import DecodeError
 import bcrypt
 import json
 import jwt
+from json         import JSONDecodeError
+from jwt          import DecodeError
 
 from django.http  import JsonResponse
 from django.views import View
@@ -14,7 +14,7 @@ from user.models  import User
 class SignInView(View):
     def post(self, request):
         try:
-            data = json.loads(request.body)
+            data     = json.loads(request.body)
             account  = data['account']
             password = data['password']
 
