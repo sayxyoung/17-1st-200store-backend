@@ -10,12 +10,9 @@ from .models import (
         Product,
         Category,
         ProductImage,
-        ProductOption,
         ProductLike,
         Review,
         ReviewStatus,
-        ProductInquiry,
-        AnswerStatus,
 )
 
 def is_new(create_at, compare_date):
@@ -33,18 +30,17 @@ def is_sale(sale):
 
 class ProductListView(View):
     def get(self, request):
-        
-        category_id = int(request.GET.get('category_id', 0))
-        sorting = request.GET.get('sorting', '-total_sales')
-        best_list = check_best_list()
-        compare_date = timezone.localtime() - timedelta(days=30)
+        category_name   = request.GET.get('category', None)
+        sorting         = request.GET.get('sorting', '-total_sales')
+        best_list       = check_best_list()
+        compare_date    = timezone.localtime() - timedelta(days=30)
 
         product_list = Product.objects.all().order_by(sorting) \
-            if category_id == 0 else Product.objects.filter(category_id=\
-            category_id).order_by(sorting)
+            if category_name is None else Product.objects.filter(category__name =\
+            category_name).order_by(sorting)
 
         products = [
-                {
+               {
                     'id'            : item.id,
                     'name'          : item.name,
                     'price'         : item.price,
@@ -58,16 +54,16 @@ class ProductListView(View):
                 }for item in product_list] 
 
         return JsonResponse({'message' : 'SUCCESS',
-                            'data' : {
+                             'data'    : {
                                     'products' : products, 
-                                }}, status=200)
+                                   }}, status=200)
 
 class ProductDetailView(View):
     def get(self, request, product_id):
-
         if not Product.objects.filter(id = product_id).exists():
             return JsonResponse({'message' : 'DOSE_NOT_EXISTS_PRODUCT'}, status=401)
-
+        
+        data    = json.loads(request.body)
         product = Product.objects.get(id = product_id)
         reviews = product.review_set.all()
         images  = product.productimage_set.all()
@@ -96,7 +92,7 @@ class ProductDetailView(View):
             } for review in reviews]
 
         return JsonResponse({'message' : 'SUCCESS',
-                             'data' : {
+                             'data'    : {
                                  'product'  : product_view,
                                  'images'   : product_images,
                                  'review'   : product_reviews,
