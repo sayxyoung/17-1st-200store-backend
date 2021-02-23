@@ -10,7 +10,7 @@ from order.models import Order
 from utils        import login_decorator
 
 def is_new(create_at, compare_date):
-    return True if compare_date < create_at  else False
+    return compare_date < create_at
 
 def check_bestList():
     best_query = Product.objects.all().only('id').order_by('-total_sales')[:20]
@@ -20,7 +20,7 @@ def is_best(checkList, id):
     return True if id in checkList else False 
 
 def is_sale(sale):
-    return True if sale > 0 else False
+    return sale > 0
 
 class MainView(View):
     def get(self, request):
