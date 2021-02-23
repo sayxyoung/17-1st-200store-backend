@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.views import View
 from django.http  import JsonResponse
 
-from .models      import Product # image_url 추가하면 구성해주기
+from .models      import Product
 from order.models import Order
 
 def is_new(create_at, compare_date):
