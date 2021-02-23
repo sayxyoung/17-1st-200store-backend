@@ -2,10 +2,8 @@ import bcrypt
 import json
 import jwt
 import re
-from datetime     import datetime
 from datetime     import timedelta
 from json         import JSONDecodeError
-from jwt          import DecodeError
 
 from django.http  import JsonResponse
 from django.views import View
@@ -72,27 +70,25 @@ class SignUpView(View):
             if not CELL_PHONE_EXPRESSION.search(cell_phone):
                 return JsonResponse({'message': 'INVALID_CELLPHONE'}, status=400)
 
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            hashed_password         = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             decoded_hashed_password = hashed_password.decode('utf-8')
-
             initial_grade = Grade.objects.get(name=GENERAL_MEMBER_GROUP)
             user = User.objects.create(
-                account    = account,
-                password   = decoded_hashed_password,
-                name       = name,
-                email      = email,
-                cell_phone = cell_phone,
-                home_phone = home_phone,
-                phone_spam = phone_spam,
-                email_spam = email_spam,
-                grade      = initial_grade,
+                account      = account,
+                password     = decoded_hashed_password,
+                name         = name,
+                email        = email,
+                cell_phone   = cell_phone,
+                home_phone   = home_phone,
+                home_address = home_address,
+                phone_spam   = phone_spam,
+                email_spam   = email_spam,
+                grade        = initial_grade,
             )
-            coupon = Coupon.objects.get(name=WELCOME_COUPON)
-            welcome_coupon_validity = user.create_at + timedelta(days=30)
-            user_coupon = UserCoupon.objects.create(
-                user_id   = user.id,
-                coupon_id = coupon.id,
-                validity  = welcome_coupon_validity,
+            UserCoupon.objects.create(
+                user_id  = user.id,
+                coupon   = Coupon.objects.get(name=WELCOME_COUPON),
+                validity = user.create_at + timedelta(days=30),
             )
 
             return JsonResponse({'message': 'SUCCESS'}, status=200)
