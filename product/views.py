@@ -2,7 +2,7 @@ import json
 
 from django.views import View
 from django.http  import JsonResponse
-from django.db    import transaction
+from django.db    import transaction, IntegrityError
 
 from .models      import MatchingReview, Review
 from order.models import Order
@@ -50,3 +50,7 @@ class ReviewView(View):
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
+        except TypeError:
+            return JsonResponse({'message':'TYPE_ERROR'}, status=400)
+        except IntegrityError:
+            return JsonResponse({'message':'INTEGERITY_ERROR'}, status=400)
