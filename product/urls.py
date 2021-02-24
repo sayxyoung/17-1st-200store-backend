@@ -1,5 +1,5 @@
 from django.urls import path
-from .views     import ReviewView, ProductLikeView
+from .views     import ReviewView, ProductLikeView, ProductView
 
 urlpatterns = [
     path('/review', ReviewView.as_view()),
