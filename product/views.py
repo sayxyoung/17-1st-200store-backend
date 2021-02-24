@@ -1,30 +1,98 @@
 import json
-from datetime     import datetime, timedelta
+from datetime            import datetime, timedelta
 
-from django.utils import timezone
-from django.views import View
-from django.http  import JsonResponse
+from django.http         import JsonResponse
+from django.views        import View
+from django.db.models    import Q
+from django.db           import transaction, IntegrityError
+from django.utils        import timezone
 
-from .models      import Product, MatchingReview, Review
-from order.models import Order
-from utils        import login_decorator
+from .models import (
+        Product,
+        Category,
+        ProductImage,
+        ProductLike,
+        Review,
+        MatchingReview,
+)
+
+from .models             import MatchingReview, Review
+from order.models        import Order
+from utils               import login_decorator
 
 def is_new(create_at, compare_date):
-    return compare_date < create_at
+    return create_at > compare_date 
 
-def check_bestList():
-    best_query = Product.objects.all().only('id').order_by('-total_sales')[:20]
+def check_best_list():
+    best_query = Product.objects.all().order_by('total_sales')[:20]
     return [best.id for best in best_query]
 
 def is_best(checkList, id):
-    return id in checkList
+    return id in checkList 
 
 def is_sale(sale):
-    return sale > 0
+    return sale > 0 
+
+class ProductListView(View):
+    def get(self, request):
+        category_name   = request.GET.get('category', None)
+        sorting         = request.GET.get('sorting', '-total_sales')
+        best_list       = check_best_list()
+        compare_date    = timezone.localtime() - timedelta(days=30)
+
+        product_list = Product.objects.all().order_by(sorting) \
+            if category_name is None else Product.objects.filter(category__name =\
+            category_name).order_by(sorting)
+
+        products = [{
+                    'id'         : item.id,
+                    'name'       : item.name,
+                    'price'      : item.price,
+                    'sale'       : item.sale,
+                    'stock'      : item.stock,
+                    'imageUrl'   : item.image_url,
+                    'category'   : item.category.id,
+                    'isNew'      : is_new(item.create_at, compare_date),
+                    'isBest'     : is_best(best_list, item.id),
+                    'isSale'     : is_sale(item.sale)
+                }for item in product_list] 
+
+        return JsonResponse({'data' : {'products' : products,}}, status=200)
+
+class ProductDetailView(View):
+    def get(self, request, product_id):
+        if not Product.objects.filter(id = product_id).exists():
+            return JsonResponse({'message' : 'PRODUCT_DOSE_NOT_EXISTS'}, status=404)
+        
+        product = Product.objects.get(id = product_id)
+        reviews = product.review_set.all()
+        images  = product.productimage_set.all()
+
+        product_view = {
+                    'id'          : product.id,
+                    'name'        : product.name,
+                    'price'       : product.price,
+                    'sale'        : product.sale,
+                    'stock'       : product.stock,
+                    'thumbnailUrl': product.image_url,
+                    'imageUrls'   : [image.image_url for image in images],
+                    'reviews'     : [{
+                                        'id'         : review.id,
+                                        'reviewTitle': review.title,
+                                        'content'    : review.content,
+                                        'starRating' : review.star_rating,
+                                        'createAt'   : review.create_at,
+                                        'userId'     : review.user_id
+                                     } for review in reviews]
+        }
+        return JsonResponse({'data' : {
+                                 'product'  : product_view,
+                            }}, status=200)
 
 class MainView(View):
     def get(self, request):
-        compare_date = compare_date = timezone.localtime() - timedelta(days=30) + timedelta(days=-30)
+        compare_date = compare_date = timezone.localtime() - \
+               timedelta(days=30) + timedelta(days=-30)
         checkBest    = check_bestList()
 
         BEST_COUNT = 4
