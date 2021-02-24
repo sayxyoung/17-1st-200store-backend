@@ -1,5 +1,4 @@
 import json
-<<<<<<< HEAD
 from datetime            import datetime, timedelta
 
 from django.http         import JsonResponse
