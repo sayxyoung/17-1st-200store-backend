@@ -94,11 +94,9 @@ class CartView(View):
     @login_decorator
     def delete(self, request, *args, **kwargs):
         try:
-            user        = request.user
             cart_id_list = request.GET.getlist('cartId', None)
             int_cart_id  = [int(cart_id) for cart_id in cart_id_list]
-            order       = Order.objects.get(user=user, status__name=SHOPPING_BASKET)
-            cart        = Cart.objects.filter(id__in=int_cart_id)
+            cart         = Cart.objects.filter(id__in=int_cart_id)
             if not cart.exists():
                 return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
