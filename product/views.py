@@ -27,13 +27,13 @@ class ProductLikeView(View):
     @login_decorator
     def get(self, request):
         
-        likes = ProductLike.objects.filter(user_id = request.user.id)
+        likes = reqeust.user.productlike_set.all()
         likes = [{
             'id'       : like.product.id,
             'name'     : like.product.name,
             'imageUrl' : like.product.image_url,
             'category' : like.product.category.id
-        } for like in likes]g
+        } for like in likes]
 
         return JsonResponse({'message':'SUCCESS', 'data':likes}, status=200)
     
@@ -41,10 +41,7 @@ class ProductLikeView(View):
     def post(self, request):
         data = json.loads(request.body)
 
-        check_have  = ProductLike.objects.get_or_create(user_id=request.user.id, product_id=data['productId'])
-        have_like   = check_have[0]
-        is_have_like = check_have[1]
-        
+        have_like, is_have_like = ProductLike.objects.get_or_create(user_id=request.user.id, product_id=data['productId'])
         if not is_have_like: have_like.delete()
 
         return JsonResponse({'message':'SUCCESS'}, status=200)
