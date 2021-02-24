@@ -1,19 +1,18 @@
+from datetime import datetime, timedelta
+from json     import JSONDecodeError
+from jwt      import DecodeError
+
 import bcrypt
 import json
 import jwt
 import re
-from datetime     import timedelta
-from json         import JSONDecodeError
 
 from django.http  import JsonResponse
 from django.views import View
 
-from my_settings  import ALGORITHM
-from my_settings  import SECRET_KEY
-from user.models  import Coupon
-from user.models  import Grade
-from user.models  import User
-from user.models  import UserCoupon
+from my_settings import ALGORITHM, SECRET_KEY
+from user.models import Coupon, Grade, User, UserCoupon, RecentlyView, Point
+from utils       import login_decorator
 
 CELL_PHONE_EXPRESSION = re.compile('^[0-9]{3}\-?[0-9]{4}\-?[0-9]{4}$')
 EMAIL_EXPRESSION      = re.compile('^[^-_.]*[0-9]+[@]{1}[a-zA-Z0-9]+[.]{1}[a-zA-Z]{2,3}$')
@@ -35,7 +34,7 @@ class SignInView(View):
             if not bcrypt.checkpw(password.encode('utf-8'), decoded_hashed_password.encode('utf-8')):
                 return JsonResponse({'message': 'INVALID_PASSWORD'}, status=401)
 
-            access_token = jwt.encode({'user_pk': user.pk}, SECRET_KEY, algorithm=ALGORITHM)
+            access_token = jwt.encode({'userPk': user.pk}, SECRET_KEY, algorithm=ALGORITHM)
 
             return JsonResponse({'message': 'SUCCESS', 'accessToken': access_token}, status=200)
 
@@ -55,11 +54,11 @@ class SignUpView(View):
             password     = data['password']
             name         = data['name']
             email        = data['email']
-            cell_phone   = data['cell_phone']
-            home_phone   = data.get('home_phone', None)
-            home_address = data.get('home_address', None)
-            phone_spam   = data.get('phone_spam', False)
-            email_spam   = data.get('email_spam', False)
+            cell_phone   = data['cellPhone']
+            home_phone   = data.get('homePhone', None)
+            home_address = data.get('homeAddress', None)
+            phone_spam   = data.get('phoneSpam', False)
+            email_spam   = data.get('emailSpam', False)
 
             if not PASSWORD_EXPRESSION.search(password):
                 return JsonResponse({'message': 'INVALID_PASSWORD'}, status=400)
@@ -100,4 +99,4 @@ class SignUpView(View):
             return JsonResponse({'message': 'BAD_REQUEST'},status=400)
 
         except User.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'BAD_REQUEST'})

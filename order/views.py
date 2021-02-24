@@ -20,38 +20,42 @@ class CartView(View):
     @login_decorator
     def post(self, request, *args, **kwargs):
         try:
-            data       = json.loads(request.body)
-            user       = request.user
-            productId  = data['productId']
-            totalPrice = data['totalPrice']
-            quantity   = data['quantity']
-            product    = Product.objects.get(id=productId)
+            data         = json.loads(request.body)
+            user         = request.user
+            product_id   = data['productId']
+            total_price  = data['totalPrice']
+            quantity     = data['quantity']
             order_status = OrderStatus.objects.get(name=SHOPPING_BASKET)
 
             if not Order.objects.filter(user=user, status=order_status).exists():
-                address = Address.objects.filter(user=user, is_default=True)
-                Order.objects.create(
+                order = Order.objects.create(
                     user          = user,
                     status        = order_status,
-                    address       = address[0],
                     total_price   = 0,
                     serial_number = '추가구현예정',
                 )
-
-            order = Order.objects.get(user=user, status=order_status)
-            if not Cart.objects.filter(order=order, product=product).exists():
                 Cart.objects.create(
                     order       = order,
-                    product     = product,
-                    option      = '',
+                    product_id  = product_id,
                     quantity    = quantity,
-                    total_price = int(totalPrice),
+                    total_price = int(total_price),
                 )
-            else:
-                cart              = Cart.objects.get(order=order, product=product)
-                cart.quantity    += int(quantity)
-                cart.total_price += int(totalPrice)
-                cart.save()
+                return JsonResponse({'message': 'SUCCESS'}, status=200)
+
+            order = Order.objects.get(user=user, status=order_status)
+            if not Cart.objects.filter(order=order, product_id=product_id).exists():
+                Cart.objects.create(
+                    order       = order,
+                    product_id  = product_id,
+                    quantity    = quantity,
+                    total_price = int(total_price),
+                )
+                return JsonResponse({'message': 'SUCCESS'}, status=200)
+
+            cart              = Cart.objects.get(order=order, product_id=product_id)
+            cart.quantity    += int(quantity)
+            cart.total_price += int(total_price)
+            cart.save()
 
             return JsonResponse({'message': 'SUCCESS'}, status=200)
 

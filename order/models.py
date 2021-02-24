@@ -3,7 +3,7 @@ from django.db import models
 class Order(models.Model):
     user            = models.ForeignKey('user.user', on_delete=models.CASCADE)
     status          = models.ForeignKey('orderstatus', on_delete=models.CASCADE)
-    address         = models.ForeignKey('user.address', on_delete=models.CASCADE)
+    address         = models.ForeignKey('user.address', on_delete=models.CASCADE, null=True)
     product         = models.ManyToManyField('product.product', through='cart', related_name='shopping_cart')
     create_at       = models.DateTimeField(auto_now_add=True)
     total_price     = models.DecimalField(max_digits=12, decimal_places=2, default=0)
@@ -25,7 +25,7 @@ class OrderStatus(models.Model):
 class Cart(models.Model):
     order       = models.ForeignKey('order.order', on_delete=models.CASCADE)
     product     = models.ForeignKey('product.product', on_delete=models.CASCADE)
-    option      = models.CharField(max_length=100)
+    option      = models.CharField(max_length=100, null=True)
     quantity    = models.SmallIntegerField()
     total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     status      = models.ForeignKey('order.cartstatus', on_delete=models.CASCADE)
