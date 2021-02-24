@@ -91,10 +91,10 @@ class CartView(View):
     def delete(self, request, *args, **kwargs):
         try:
             user        = request.user
-            cartId_list = request.GET.getlist('cartId', None)
-            int_cartId  = [int(cartId) for cartId in cartId_list]
+            cart_id_list = request.GET.getlist('cartId', None)
+            int_cart_id  = [int(cart_id) for cart_id in cart_id_list]
             order       = Order.objects.get(user=user, status__name=SHOPPING_BASKET)
-            cart        = Cart.objects.filter(id__in=int_cartId)
+            cart        = Cart.objects.filter(id__in=int_cart_id)
             if not cart.exists():
                 return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
