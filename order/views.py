@@ -26,22 +26,8 @@ class CartView(View):
             totalPrice = data['totalPrice']
             quantity   = data['quantity']
             product    = Product.objects.get(id=productId)
-
-            if not Address.objects.filter(user=user, is_default=True).exists():
-                user_to_address = user.home_address
-                if not user_to_address:
-                    user_to_address = ''
-
-                address = Address.objects.create(
-                    user       = user,
-                    name       = user.name,
-                    to_person  = user.name,
-                    to_address = user_to_address,
-                    cell_phone = user.cell_phone,
-                    is_default = True,
-                )
-
             order_status = OrderStatus.objects.get(name=SHOPPING_BASKET)
+
             if not Order.objects.filter(user=user, status=order_status).exists():
                 address = Address.objects.filter(user=user, is_default=True)
                 Order.objects.create(
@@ -82,11 +68,11 @@ class CartView(View):
     def get(self, request, *args, **kwargs):
         try:
             user         = request.user
-            order_status = OrderStatus.objects.get(name=SHOPPING_BASKET)
-            order        = Order.objects.get(user=user, status=order_status)
-            cart_lists   = Cart.objects.filter(order=order)
+            order        = Order.objects.get(user=user, status__name=SHOPPING_BASKET)
+            cart_lists   = order.cart_set.all()
             result = [
                 {
+                    'cartId'    : cart_list.id,
                     'productId' : cart_list.product_id,
                     'product'   : cart_list.product.name,
                     'option'    : cart_list.option,
@@ -104,13 +90,11 @@ class CartView(View):
     @login_decorator
     def delete(self, request, *args, **kwargs):
         try:
-            user                  = request.user
-            data                  = json.loads(request.body)
-            product_list          = data['product']
-            delete_productId_list = [product_list[idx]['productId'] for idx in range(len(product_list))]
-            order_status          = OrderStatus.objects.get(name=CartView.SHOPPING_BASKET)
-            order                 = Order.objects.get(user=user, status=order_status)
-            cart                  = Cart.objects.filter(order=order, product_id__in=delete_productId_list)
+            user        = request.user
+            cartId_list = request.GET.getlist('cartId', None)
+            int_cartId  = [int(cartId) for cartId in cartId_list]
+            order       = Order.objects.get(user=user, status__name=SHOPPING_BASKET)
+            cart        = Cart.objects.filter(id__in=int_cartId)
             if not cart.exists():
                 return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
