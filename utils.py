@@ -1,4 +1,5 @@
 import jwt
+from json     import JSONDecodeError
 
 from django.http import JsonResponse
 
@@ -20,6 +21,9 @@ def login_decorator(func):
             return JsonResponse({'message': 'INVALID_TOKEN'}, status=400)
 
         except User.DoesNotExist:
+            return JsonResponse({'message': 'INVALID_USER'}, status=400)
+
+        except JSONDecodeError:
             return JsonResponse({'message': 'INVALID_USER'}, status=400)
 
     return wrapper
