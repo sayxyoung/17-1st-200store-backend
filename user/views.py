@@ -1,5 +1,4 @@
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 from json     import JSONDecodeError
 from jwt      import DecodeError
 
@@ -11,12 +10,9 @@ import re
 from django.http  import JsonResponse
 from django.views import View
 
-from my_settings import ALGORITHM
-from my_settings import SECRET_KEY
-from user.models import Coupon
-from user.models import Grade
-from user.models import User
-from user.models import UserCoupon
+from my_settings import ALGORITHM, SECRET_KEY
+from user.models import Coupon, Grade, User, UserCoupon, RecentlyView, Point
+from utils       import login_decorator
 
 CELL_PHONE_EXPRESSION = re.compile('^[0-9]{3}\-?[0-9]{4}\-?[0-9]{4}$')
 PASSWORD_EXPRESSION   = re.compile('^(?=.*[a-z])(?=.*[A-z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$')
@@ -80,3 +76,40 @@ class SignUpView(View):
 
         except User.DoesNotExist:
             return JsonResponse({'message': 'BAD_REQUEST'})
+
+class MyPageMainView(View):
+    RECENTLY_VIEW_COUNT = 4
+
+    @login_decorator
+    def get(self, request):
+
+        user = request.user
+        coupon = Coupon.objects.filter(user=user).count()
+        point  = Point.objects.filter(user=user).order_by('-create_at')[:1]
+
+        # 진행 중인 주문에 대한 값들 고민하기
+        # status = Order.objects.filter(user=user)
+        # wating_deposit = status
+
+        recently_views = RecentlyView.objects.filter(user=user).\
+                order_by('-create_at').distinct()[:RECENTLY_VIEW_COUNT]
+        recently_views = [{
+            'name'     : view.product.name,
+            'imageUrl' : view.product.image_url,
+            'id'       : view.product.id
+        } for view in recently_views]
+
+        return JsonResponse({
+            'message'      :'SUCCESS',
+            'user'         : {
+                'name'     : user.name,
+                'grade'    : user.grade.name,
+                'coupon'   : coupon,
+                'point'    : point[0].remaining_point,
+            } ,
+            'orderStatus'  : {
+                ''
+            },
+            'recentlyView' : recently_views
+            }, status=200)
+

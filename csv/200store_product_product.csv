@@ -1,0 +1,37 @@
+name,price,stock,sale,image_url,total_sales,create_at,update_at,category
+샤워 하고 쓰면 개운한 수건,5500.00,10,0.05,https://cdn.pixabay.com/photo/2015/03/09/21/04/child-666352_1280.jpg,35,2018-01-02,2020-02-03,6
+쓰면 정리하기 힘든 선,15000.00,1,0.00,https://images.unsplash.com/photo-1517373116369-9bdb8cdc9f62?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80,0,2018-02-03,2018-02-03,2
+위에 앉으면 구멍뚫어주는 볼트,999999.00,5,0.00,https://images.unsplash.com/photo-1566379680937-b375ba1b7691?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80,56,1999-01-01,1999-01-01,9
+"new 에디션, 공구리 친구들",35000.00,80,0.30,https://cdn.pixabay.com/photo/2018/01/20/08/01/craftsmen-3094035_1280.jpg,75,2020-03-04,2021-01-01,7
+세상에서 제일 비싼 건담,100000.00,5,0.05,https://images.unsplash.com/photo-1612400200701-847d015ba101?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTJ8fHRveXxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60,8,2020-04-07,2021-02-07,3
+마시면 취하는 가루,500000.00,3,0.02,https://cdn.pixabay.com/photo/2020/05/05/19/58/play-5134828_640.jpg,2,2021-01-15,2021-01-31,9
+호구들을 위한 바비인형,999999.00,65,0.10,https://cdn.pixabay.com/photo/2016/03/16/15/18/beauty-1260975_640.jpg,10,2020-02-19,2020-02-20,3
+꾹꾹 눌러지는 쿠션,20000.00,4,0.30,https://images.unsplash.com/photo-1586892378222-2f53ce5d609a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1049&q=80,20,2020-08-15,2020-10-31,4
+바나나 양말 신으면 반하지,2000.00,23,0.90,https://images.unsplash.com/photo-1564379976409-79bd0786fff1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80,65,2020-07-17,2020-10-09,4
+노트로 공부하자,4500.00,1,0.30,https://images.unsplash.com/photo-1528968620-57e0257ff360?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80,4,2021-02-17,2021-02-19,3
+2021 캘린더와 함께,9900.00,44,0.70,https://images.unsplash.com/photo-1578625155481-7bc40a6481b6?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80,23,2020-12-31,2020-12-31,3
+앗 커피콩 타이어보다 싸다,4900.00,63,0.10,https://images.unsplash.com/photo-1515471897120-85416077e011?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=934&q=80,1,2020-03-05,2020-09-08,7
+보온 기능은 별로인 보온병,6900.00,3,0.20,https://images.unsplash.com/photo-1589365278144-c9e705f843ba?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80,44,2021-01-03,2021-02-19,2
+십오색 색연필,3000.00,32,0.00,https://images.unsplash.com/photo-1607081758973-b85919737e26?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80,63,2019-08-03,2020-02-03,1
+오늘일은 내일로 미루자,25900.00,56,0.10,https://images.unsplash.com/photo-1568150279679-d16bc9eb9eb1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=975&q=80,3,2020-10-10,2021-02-03,1
+은은~한 볼펜,1500.00,75,0.00,https://images.unsplash.com/photo-1524116125474-e3eec64213f7?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80,0,2020-11-11,2021-02-19,1
+우유와 꿀,34000.00,8,0.50,https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80,1,2018-03-21,2019-12-25,2
+쓸모없는 선물 사주기 추천,29000.00,2,0.50,https://images.unsplash.com/photo-1610384466709-9b83df910cc5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80,2,2019-08-08,2020-12-31,7
+햇빛 다 막아,30000.00,10,0.20,https://images.unsplash.com/photo-1566421966482-ad8076104d8e?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=934&q=80,10,2017-05-05,2018-08-03,2
+현대인의 필수품,590000.00,1,0.10,https://images.unsplash.com/photo-1582178538120-06a684adaec5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=924&q=80,1,2020-04-13,2021-02-01,2
+청소 로봇,3500.00,10,0.10,https://images.unsplash.com/photo-1546776310-eef45dd6d63c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=739&q=80,90,2021-01-01,2021-01-01,1
+카네이션이 든 돈봉투,3500.00,10,0.00,https://images.unsplash.com/photo-1591783097488-bda7e4e8653e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=664&q=80,8,2021-02-01,2021-02-01,1
+아이폰3 케이스,11000.00,10,0.10,https://images.unsplash.com/photo-1535157412991-2ef801c1748b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80,40,2021-01-08,2021-01-08,2
+둘이먹다 둘다죽은 맛있는 비누,11000.00,10,0.00,https://images.unsplash.com/photo-1598963234709-38e2a1c541b3?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80,0,2021-02-27,2021-02-27,2
+흑심을 품은 연필,10900.00,10,0.00,https://images.unsplash.com/photo-1593435221502-c5d7bfc26cab?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80,70,2021-02-03,2021-02-03,2
+팔이 달린 시계,26000.00,10,0.20,https://images.unsplash.com/photo-1545494749-a5f7bf606a83?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=564&q=80,0,2021-02-06,2021-02-06,3
+블루투스 바이올린,17000.00,10,0.00,https://images.unsplash.com/photo-1607046768831-39ef8e9ad2d2?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80,30,2021-02-07,2021-02-07,3
+한장쓰고 버리는 다이어리,12000.00,10,0.00,https://images.unsplash.com/photo-1568150279679-d16bc9eb9eb1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=675&q=80,0,2021-02-19,2021-02-19,3
+여름에 더운 기능성 반팔티,8000.00,20,0.00,https://images.unsplash.com/photo-1521498542256-5aeb47ba2b36?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=3150&q=80,4,2021-02-04,2021-02-05,3
+물필요없는 물걸레 청소기,149000.00,10,0.10,https://images.unsplash.com/photo-1569698134101-f15cde5cd66c?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80,100,2021-01-04,2021-02-09,3
+바둑 두는 로봇,700000.00,5,0.00,https://images.unsplash.com/photo-1563396983906-b3795482a59a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1952&q=80,1,2021-01-29,2021-01-29,7
+에어팥,19900.00,30,0.00,https://images.unsplash.com/photo-1574016775261-f0466706e4da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80,20,2021-01-01,2021-02-01,3
+윈도우 설치된 맥북프로,300000.00,19,0.04,https://images.unsplash.com/photo-1493020258366-be3ead1b3027?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80,30,2020-12-20,2021-01-12,3
+이겨내자 코로나, ,100,0.10,https://images.unsplash.com/photo-1549231482-5cf39d19fba4?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=933&q=80,100,2021-01-01,2021-01-01,1
+방수 안되는 시계,19900.00,40,0.10,https://images.unsplash.com/photo-1579811216948-6f57c19376a5?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=941&q=80,8,2021-01-12,2021-01-12,3
+삼성-애플 콜라보 에어버즈,990000.00,20,0.00,https://images.unsplash.com/photo-1591913128518-20a6508cc413?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=2090&q=80,20,2021-01-01,2021-01-01,9

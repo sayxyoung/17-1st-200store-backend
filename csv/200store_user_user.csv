@@ -1,0 +1,6 @@
+account,password,name,email,cell_phone,home_phone,home_address,phone_spam,email_spam,grade,coupon,point,create_at,update_at,total_price
+castle,12345678,장송준,caslte@naver.com,010-1111-1111,02-1234-1234,서울시 노원구,1,1,3,1,2000,,,500000
+joooun,12345678,장주운,joooun@gamil.com,010-8888-8888,031-756-9393,경기도 안산시,0,1,1,3,0,,,2000000
+binogood,12345678,송비노,binogood@yahoo.co.kr,011-234-8898,02-9999-9876,경기도 용인시,1,0,4,0,123000,,,300000
+young,12345678,여엉,young@naver.com,010-4567-8897,02-1234-5848,서울시 성북구,0,0,1,10,300,,,100000
+yonzoo,12345678,욘주,alcohol@gamil.com,010-3452-4836,031-4756-3847,인천시 부천구,1,1,2,4,1000,,,0
