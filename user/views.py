@@ -1,19 +1,18 @@
+from datetime import datetime, timedelta
+from json     import JSONDecodeError
+from jwt      import DecodeError
+
 import bcrypt
 import json
 import jwt
 import re
-from datetime     import timedelta
-from json         import JSONDecodeError
 
 from django.http  import JsonResponse
 from django.views import View
 
-from my_settings  import ALGORITHM
-from my_settings  import SECRET_KEY
-from user.models  import Coupon
-from user.models  import Grade
-from user.models  import User
-from user.models  import UserCoupon
+from my_settings import ALGORITHM, SECRET_KEY
+from user.models import Coupon, Grade, User, UserCoupon, RecentlyView, Point
+from utils       import login_decorator
 
 CELL_PHONE_EXPRESSION = re.compile('^[0-9]{3}\-?[0-9]{4}\-?[0-9]{4}$')
 EMAIL_EXPRESSION      = re.compile('^[^-_.]*[0-9]+[@]{1}[a-zA-Z0-9]+[.]{1}[a-zA-Z]{2,3}$')
@@ -100,4 +99,4 @@ class SignUpView(View):
             return JsonResponse({'message': 'BAD_REQUEST'},status=400)
 
         except User.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'BAD_REQUEST'})
