@@ -15,6 +15,7 @@ from user.models      import User
 from utils            import login_decorator
 
 SHOPPING_BASKET = "장바구니"
+
 class CartView(View):
     @login_decorator
     def post(self, request, *args, **kwargs):
