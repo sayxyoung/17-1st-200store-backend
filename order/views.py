@@ -32,7 +32,6 @@ class CartView(View):
                 order = Order.objects.create(
                     user          = user,
                     status        = order_status,
-                    total_price   = 0,
                     serial_number = str(uuid.uuid4())
                 )
                 Cart.objects.create(
@@ -89,7 +88,7 @@ class CartView(View):
                     'option'    : cart_list.option,
                     'quantity'  : cart_list.quantity,
                     'totalPrice': int(cart_list.total_price),
-                    'eachPrice' : int(cart_list.total_price/cart_list.quantity),
+                    'eachPrice' : cart_list.product.price,
                     'urlImage'  : cart_list.product.image_url,
                 } for cart_list in cart_lists
             ]
