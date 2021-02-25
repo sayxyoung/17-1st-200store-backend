@@ -37,7 +37,6 @@ class ProductListView(View):
     def get(self, request):
         category_name   = request.GET.get('category', None)
         sorting         = request.GET.get('sorting', '-total_sales')
-        print(category_name, sorting)
         best_list       = check_best_list()
         compare_date    = timezone.localtime() - timedelta(days=30)
 
