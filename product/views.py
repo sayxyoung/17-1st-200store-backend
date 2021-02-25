@@ -37,6 +37,7 @@ class ProductListView(View):
     def get(self, request):
         category_name   = request.GET.get('category', None)
         sorting         = request.GET.get('sorting', '-total_sales')
+        print(category_name, sorting)
         best_list       = check_best_list()
         compare_date    = timezone.localtime() - timedelta(days=30)
 
@@ -82,7 +83,7 @@ class ProductDetailView(View):
                                         'content'    : review.content,
                                         'starRating' : review.star_rating,
                                         'createAt'   : review.create_at,
-                                        'userId'     : review.user_id
+                                        'userId'     : review.user.account
                                      } for review in reviews]
         }
         return JsonResponse({'data' : {
@@ -93,7 +94,7 @@ class MainView(View):
     def get(self, request):
         compare_date = compare_date = timezone.localtime() - \
                timedelta(days=30) + timedelta(days=-30)
-        checkBest    = check_bestList()
+        checkBest    = check_best_list()
 
         BEST_COUNT = 4
         NEW_COUNT  = 8
@@ -162,6 +163,7 @@ class ReviewView(View):
     @login_decorator
     def post(self, request):
         data = json.loads(request.body)
+        user = request.user
 
         try:
             product_id = int(data['productId'])
