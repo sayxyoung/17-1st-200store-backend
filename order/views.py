@@ -30,7 +30,7 @@ class OrderListView(View):
                 'quantity'      : cart.quantity,
                 'productStatus' : cart.status.id,
                 'isReview'      : MatchingReview.objects.filter(order=order.id, product=cart.product).exists()
-            } for cart in Cart.objects.filter(order_id=order.id)]
+            } for cart in order.cart_set.all()]
         } for order in orders]
 
         return JsonResponse({'message':'SUCCESS', 'data': result}, status=200)
@@ -40,13 +40,11 @@ class OrderListView(View):
         data = json.loads(request.body)
 
         try:
-            # status_type = reqeust.GET.get('statusType', None)
-            status_id  = request.GET.get('statusId', None)
             order_id   = data['orderId']
             product_id = data['productId'] 
 
             product           = Cart.objects.get(order_id=order_id, product_id=product_id)
-            product.status_id = status_id
+            product.status_id = 4
             product.save()
 
         except KeyError:
