@@ -10,6 +10,7 @@ from django.db        import transaction, IntegrityError
 from utils            import login_decorator
 from user.models      import User
 from order.models     import Order, Cart
+from order.views      import get_order_list
 from product.models   import (
     ProductLike, 
     Product, 
@@ -209,26 +210,7 @@ class ReviewView(View):
                     product_id = product_id
                 )
             
-            compare_date = timezone.localtime() - timedelta(days=7)
-            start_date   = request.GET.get('startDate', compare_date)
-            end_date     = request.GET.get('endDate', timezone.localtime())
-
-            orders = Order.objects.filter(user_id=request.user.id, create_at__range=(start_date, end_date))
-            
-            result = [{
-                'serialNumber' : order.serial_number,
-                'orderStatus'  : order.status.id,
-                'orderDate'    : order.create_at,
-                'orderId'      : order.id,
-                'subProducts'  : [{
-                    'id'            : cart.product.id,
-                    'name'          : cart.product.name,
-                    'totalPrice'    : cart.total_price,
-                    'quantity'      : cart.quantity,
-                    'productStatus' : cart.status.id,
-                    'isReview'      : MatchingReview.objects.filter(order=order.id, product=cart.product).exists()
-                } for cart in Cart.objects.filter(order_id=order.id)]
-            } for order in orders]
+            result = get_order_list(request)
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
