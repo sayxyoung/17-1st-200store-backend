@@ -1,24 +1,23 @@
 import json
-from datetime            import datetime, timedelta
+from datetime         import datetime, timedelta
 
-from django.http         import JsonResponse
-from django.views        import View
-from django.db.models    import Q
-from django.db           import transaction, IntegrityError
-from django.utils        import timezone
+from django.utils     import timezone
+from django.views     import View
+from django.http      import JsonResponse
+from django.db.models import Q
+from django.db        import transaction, IntegrityError
 
-from .models import (
-        Product,
-        Category,
-        ProductImage,
-        ProductLike,
-        Review,
-        MatchingReview,
+from utils            import login_decorator
+from user.models      import User
+from order.models     import Order
+from product.models   import (
+    ProductLike, 
+    Product, 
+    ProductImage,
+    MatchingReview, 
+    Review, 
+    Category
 )
-
-from .models             import MatchingReview, Review
-from order.models        import Order
-from utils               import login_decorator
 
 def is_new(create_at, compare_date):
     return create_at > compare_date 
@@ -89,6 +88,29 @@ class ProductDetailView(View):
                                  'product'  : product_view,
                             }}, status=200)
 
+class ProductLikeView(View):
+    @login_decorator
+    def get(self, request):
+        
+        likes = reqeust.user.productlike_set.all()
+        likes = [{
+            'id'       : like.product.id,
+            'name'     : like.product.name,
+            'imageUrl' : like.product.image_url,
+            'category' : like.product.category.id
+        } for like in likes]
+
+        return JsonResponse({'message':'SUCCESS', 'data':likes}, status=200)
+    
+    @login_decorator
+    def post(self, request):
+        data = json.loads(request.body)
+
+        have_like, is_have_like = ProductLike.objects.get_or_create(user_id=request.user.id, product_id=data['productId'])
+        if not is_have_like: have_like.delete()
+
+        return JsonResponse({'message':'SUCCESS'}, status=200)
+
 class MainView(View):
     def get(self, request):
         compare_date = compare_date = timezone.localtime() - \
@@ -153,8 +175,8 @@ class ReviewView(View):
             'user'       : review.user.account,
             'content'    : review.content,
             'starRating' : review.star_rating,
-            'imageUrl'  : review.image_url,
-            'createAt'  : review.create_at
+            'imageUrl'   : review.image_url,
+            'createAt'   : review.create_at
         } for review in reviews]
 
         return JsonResponse({'message':'SUCCUSS', 'date': reviews}, status=200)
@@ -188,9 +210,9 @@ class ReviewView(View):
                     product_id = product_id
                 )
 
-            return JsonResponse({'message':'SUCCESS'}, status=200)
-
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
         except IntegrityError:
             return JsonResponse({'message':'INTEGERITY_ERROR'}, status=400)
+
+        return JsonResponse({'message':'SUCCESS'}, status=200)
