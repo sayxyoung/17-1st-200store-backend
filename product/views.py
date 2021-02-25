@@ -9,7 +9,8 @@ from django.db        import transaction, IntegrityError
 
 from utils            import login_decorator
 from user.models      import User
-from order.models     import Order
+from order.models     import Order, Cart
+from order.views      import get_order_list
 from product.models   import (
     ProductLike, 
     Product, 
@@ -187,8 +188,8 @@ class ReviewView(View):
         user = request.user
 
         try:
-            product_id = int(data['productId'])
-            order_id   = int(data['orderId'])
+            product_id = data['productId']
+            order_id   = data['orderId']
 
             check_matching = MatchingReview.objects.filter(product_id=product_id, order_id=order_id)
             if check_matching.exists():
@@ -209,10 +210,12 @@ class ReviewView(View):
                     order_id   = order_id,
                     product_id = product_id
                 )
+            
+            result = get_order_list(request)
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
         except IntegrityError:
             return JsonResponse({'message':'INTEGERITY_ERROR'}, status=400)
 
-        return JsonResponse({'message':'SUCCESS'}, status=200)
+        return JsonResponse({'message':'SUCCESS', 'data': result}, status=200)

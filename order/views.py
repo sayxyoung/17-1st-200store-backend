@@ -1,18 +1,17 @@
 import json
 import uuid
 from json             import JSONDecodeError
+from datetime         import datetime, timedelta
 
 from django.db        import transaction
 from django.db.models import Q
 from django.http      import JsonResponse
 from django.views     import View
+from django.utils     import timezone
 
-from order.models     import Cart
-from order.models     import Order
-from order.models     import OrderStatus
-from product.models   import Product
-from user.models      import Address
-from user.models      import User
+from order.models     import Order, Cart, OrderStatus
+from product.models   import MatchingReview
+from user.models      import Address, User
 from utils            import login_decorator
 
 SHOPPING_BASKET = "장바구니"
@@ -120,3 +119,57 @@ class CartView(View):
 
         except OrderStatus.DoesNotExist:
             return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+
+def get_order_list(request):
+    compare_date = timezone.localtime() - timedelta(days=7)
+    start_date   = request.GET.get('startDate', compare_date)
+    end_date     = request.GET.get('endDate', timezone.localtime())
+
+    orders = Order.objects.filter(user_id=request.user.id, create_at__range=(start_date, end_date))
+    
+    result = [{
+        'serialNumber' : order.serial_number,
+        'orderStatus'  : order.status.id,
+        'orderDate'    : order.create_at,
+        'orderId'      : order.id,
+        'subProducts'  : [{
+            'id'            : cart.product.id,
+            'name'          : cart.product.name,
+            'totalPrice'    : cart.total_price,
+            'quantity'      : cart.quantity,
+            'productStatus' : cart.status.id,
+            'isReview'      : MatchingReview.objects.filter(order=order.id, product=cart.product).exists()
+        } for cart in order.cart_set.all()]
+    } for order in orders] 
+
+    return result
+
+class OrderListView(View):
+    @login_decorator
+    def get(self, request):
+        result = get_order_list(request)
+
+        return JsonResponse({'message':'SUCCESS', 'data': result}, status=200)
+
+    @login_decorator
+    def patch(self, request):
+        CONFIRM_STATUS = 4
+
+        data = json.loads(request.body)
+
+        try:
+            order_id   = data['orderId']
+            product_id = data['productId'] 
+
+            product           = Cart.objects.get(order_id=order_id, product_id=product_id)
+            product.status_id = CONFIRM_STATUS
+            product.save()
+
+            result = get_order_list(request)
+
+        except KeyError:
+            return JsonResponse({'message':'KEY_ERROR'}, status=400)
+        except Cart.DoesNotExist:
+            return JsonResponse({'message':'DOES_NOT_EXIST'}, status=400)
+        
+        return JsonResponse({'message':'SUCCESS', 'data': result}, status=200)
