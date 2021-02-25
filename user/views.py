@@ -1,18 +1,20 @@
-from datetime import datetime, timedelta
-from json     import JSONDecodeError
-from jwt      import DecodeError
+from datetime           import datetime, timedelta
+from json               import JSONDecodeError
+from jwt                import DecodeError
 
 import bcrypt
 import json
 import jwt
 import re
 
-from django.http  import JsonResponse
-from django.views import View
+from django.http        import JsonResponse
+from django.views       import View
+from django.db.models   import Count
 
-from my_settings import ALGORITHM, SECRET_KEY
-from user.models import Coupon, Grade, User, UserCoupon, RecentlyView, Point
-from utils       import login_decorator
+from my_settings        import ALGORITHM, SECRET_KEY
+from user.models        import Coupon, Grade, User, UserCoupon, RecentlyView, Point
+from order.models       import Order, OrderStatus
+from utils              import login_decorator
 
 CELL_PHONE_EXPRESSION = re.compile('^[0-9]{3}\-?[0-9]{4}\-?[0-9]{4}$')
 EMAIL_EXPRESSION      = re.compile('^[^-_.]*[0-9]+[@]{1}[a-zA-Z0-9]+[.]{1}[a-zA-Z]{2,3}$')
@@ -48,6 +50,7 @@ class SignUpView(View):
     def post(self, request):
         GENERAL_MEMBER_GROUP = "일반회원그룹"
         WELCOME_COUPON       = "웰컴 쿠폰"
+
         try:
             data         = json.loads(request.body)
             account      = data['account']
@@ -100,3 +103,36 @@ class SignUpView(View):
 
         except User.DoesNotExist:
             return JsonResponse({'message': 'BAD_REQUEST'})
+
+class MyPageMainView(View):
+    @login_decorator
+    def get(self, request):
+        RECENTLY_VIEW_COUNT = 4 
+
+        user         = request.user
+        coupon       = Coupon.objects.filter(user=user).count()
+        point        = Point.objects.filter(user=user).order_by('-create_at').first()
+        orders       = Order.objects.filter(user_id=user.id).values('status__name').annotate(count=Count('status')) 
+
+        recently_views = RecentlyView.objects.filter(user=user).\
+                order_by('-create_at').distinct()[:RECENTLY_VIEW_COUNT]
+
+        recently_views = [{
+            'name'     : view.product.name,
+            'imageUrl' : view.product.image_url,
+            'id'       : view.product.id
+        } for view in recently_views]
+
+        return JsonResponse({
+                'user'     : {
+                'name'     : user.name,
+                'grade'    : user.grade.name,
+                'coupon'   : coupon,
+                'point'    : point.remaining_point,
+            },
+            'orderStatus'  : [{
+                        'name'     : order['status__name'], 
+                        'count'    : order['count'] 
+            } for order in orders],
+            'recentlyView' : recently_views
+        })

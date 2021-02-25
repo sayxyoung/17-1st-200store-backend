@@ -9,7 +9,8 @@ from django.db        import transaction, IntegrityError
 
 from utils            import login_decorator
 from user.models      import User
-from order.models     import Order
+from order.models     import Order, Cart
+from order.views      import get_order_list
 from product.models   import (
     ProductLike, 
     Product, 
@@ -40,7 +41,7 @@ class ProductListView(View):
         compare_date    = timezone.localtime() - timedelta(days=30)
 
         product_list = Product.objects.all().order_by(sorting) \
-            if category_name is None else Product.objects.filter(category__name =\
+            if category_name is None or category_name == '전체' else Product.objects.filter(category__name =\
             category_name).order_by(sorting)
 
         products = [{
@@ -81,7 +82,7 @@ class ProductDetailView(View):
                                         'content'    : review.content,
                                         'starRating' : review.star_rating,
                                         'createAt'   : review.create_at,
-                                        'userId'     : review.user_id
+                                        'userId'     : review.user.account
                                      } for review in reviews]
         }
         return JsonResponse({'data' : {
@@ -115,7 +116,7 @@ class MainView(View):
     def get(self, request):
         compare_date = compare_date = timezone.localtime() - \
                timedelta(days=30) + timedelta(days=-30)
-        checkBest    = check_bestList()
+        checkBest    = check_best_list()
 
         BEST_COUNT = 4
         NEW_COUNT  = 8
@@ -184,10 +185,11 @@ class ReviewView(View):
     @login_decorator
     def post(self, request):
         data = json.loads(request.body)
+        user = request.user
 
         try:
-            product_id = int(data['productId'])
-            order_id   = int(data['orderId'])
+            product_id = data['productId']
+            order_id   = data['orderId']
 
             check_matching = MatchingReview.objects.filter(product_id=product_id, order_id=order_id)
             if check_matching.exists():
@@ -208,10 +210,12 @@ class ReviewView(View):
                     order_id   = order_id,
                     product_id = product_id
                 )
+            
+            result = get_order_list(request)
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
         except IntegrityError:
             return JsonResponse({'message':'INTEGERITY_ERROR'}, status=400)
 
-        return JsonResponse({'message':'SUCCESS'}, status=200)
+        return JsonResponse({'message':'SUCCESS', 'data': result}, status=200)
