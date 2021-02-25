@@ -47,19 +47,11 @@ class SignUpView(View):
         WELCOME_COUPON       = "웰컴 쿠폰"
         try:
             data         = json.loads(request.body)
-
-            print(data)
-            print(data['account'])
-            print(data['password'])
-            print(data['name'])
-            print(data['email'])
-            # print(data['cell_phone'])
-
             account      = data['account']
             password     = data['password']
             name         = data['name']
             email        = data['email']
-            cell_phone   = data.get('cell_phone', None)
+            cell_phone   = data['cell_phone']
             home_phone   = data.get('home_phone', None)
             home_address = data.get('home_address', None)
             phone_spam   = data.get('phone_spam', False)
@@ -100,8 +92,8 @@ class SignUpView(View):
         except JSONDecodeError:
             return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
-        # except KeyError:
-        #     return JsonResponse({'message': 'BAD_REQUEST'},status=400)
+        except KeyError:
+            return JsonResponse({'message': 'BAD_REQUEST'},status=400)
 
         except User.DoesNotExist:
             return JsonResponse({'message': 'BAD_REQUEST'})
