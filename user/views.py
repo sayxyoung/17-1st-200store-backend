@@ -2,10 +2,12 @@ from datetime import datetime, timedelta
 from json     import JSONDecodeError
 from jwt      import DecodeError
 
-import bcrypt
-import json
-import jwt
-import re
+import (
+    bcrypt,
+    json,
+    jwt,
+    re
+)
 
 from django.http  import JsonResponse
 from django.views import View
