@@ -11,7 +11,7 @@ from django.utils     import timezone
 
 from order.models     import Order, Cart, OrderStatus
 from product.models   import MatchingReview
-from uset.models      import Address, User
+from user.models      import Address, User
 from utils            import login_decorator
 
 SHOPPING_BASKET = "장바구니"
