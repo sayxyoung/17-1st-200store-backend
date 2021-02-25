@@ -41,7 +41,7 @@ class OrderListView(View):
 
         try:
             # status_type = reqeust.GET.get('statusType', None)
-            status_id  = request.GET.get('status_id', None)
+            status_id  = request.GET.get('statusId', None)
             order_id   = data['orderId']
             product_id = data['productId'] 
 

@@ -17,7 +17,7 @@ from .models import (
 )
 
 from .models             import MatchingReview, Review
-from order.models        import Order
+from order.models        import Order, Cart
 from utils               import login_decorator
 
 def is_new(create_at, compare_date):
@@ -164,8 +164,8 @@ class ReviewView(View):
         data = json.loads(request.body)
 
         try:
-            product_id = int(data['productId'])
-            order_id   = int(data['orderId'])
+            product_id = data['productId']
+            order_id   = data['orderId']
 
             check_matching = MatchingReview.objects.filter(product_id=product_id, order_id=order_id)
             if check_matching.exists():
@@ -186,10 +186,31 @@ class ReviewView(View):
                     order_id   = order_id,
                     product_id = product_id
                 )
+            
+            compare_date = timezone.localtime() - timedelta(days=7)
+            start_date   = request.GET.get('startDate', compare_date)
+            end_date     = request.GET.get('endDate', timezone.localtime())
 
-            return JsonResponse({'message':'SUCCESS'}, status=200)
+            orders = Order.objects.filter(user_id=request.user.id, create_at__range=(start_date, end_date))
+            
+            result = [{
+                'serialNumber' : order.serial_number,
+                'orderStatus'  : order.status.id,
+                'orderDate'    : order.create_at,
+                'orderId'      : order.id,
+                'subProducts'  : [{
+                    'id'            : cart.product.id,
+                    'name'          : cart.product.name,
+                    'totalPrice'    : cart.total_price,
+                    'quantity'      : cart.quantity,
+                    'productStatus' : cart.status.id,
+                    'isReview'      : MatchingReview.objects.filter(order=order.id, product=cart.product).exists()
+                } for cart in Cart.objects.filter(order_id=order.id)]
+            } for order in orders]
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
         except IntegrityError:
             return JsonResponse({'message':'INTEGERITY_ERROR'}, status=400)
+
+        return JsonResponse({'message':'SUCCESS', 'data': result}, status=200)
