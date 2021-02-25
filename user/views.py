@@ -31,7 +31,7 @@ class SignInView(View):
             if not bcrypt.checkpw(password.encode('utf-8'), decoded_hashed_password.encode('utf-8')):
                 return JsonResponse({'message': 'INVALID_PASSWORD'}, status=401)
 
-            access_token = jwt.encode({'user_pk': user.pk}, SECRET_KEY, algorithm=ALGORITHM)
+            access_token = jwt.encode({'userPk': user.pk}, SECRET_KEY, algorithm=ALGORITHM)
 
             return JsonResponse({'message': 'SUCCESS', 'accessToken': access_token}, status=200)
 
@@ -51,11 +51,11 @@ class SignUpView(View):
             password     = data['password']
             name         = data['name']
             email        = data['email']
-            cell_phone   = data['cell_phone']
-            home_phone   = data.get('home_phone', None)
-            home_address = data.get('home_address', None)
-            phone_spam   = data.get('phone_spam', False)
-            email_spam   = data.get('email_spam', False)
+            cell_phone   = data['cellPhone']
+            home_phone   = data.get('homePhone', None)
+            home_address = data.get('homeAddress', None)
+            phone_spam   = data.get('phoneSpam', False)
+            email_spam   = data.get('emailSpam', False)
 
             if not PASSWORD_EXPRESSION.search(password):
                 return JsonResponse({'message': 'INVALID_PASSWORD'}, status=400)
