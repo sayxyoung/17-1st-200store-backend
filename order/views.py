@@ -29,12 +29,11 @@ class CartView(View):
             order_status = OrderStatus.objects.get(name=SHOPPING_BASKET)
 
             if not Order.objects.filter(user=user, status=order_status).exists():
-                uuid_number = str(uuid.uuid4())[:17]
                 order = Order.objects.create(
                     user          = user,
                     status        = order_status,
                     total_price   = 0,
-                    serial_number = str(user.id)+uuid_number,
+                    serial_number = str(uuid.uuid4())
                 )
                 Cart.objects.create(
                     order       = order,
@@ -68,6 +67,12 @@ class CartView(View):
             return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
         except Product.DoesNotExist:
+            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+
+        except Order.DoesNotExist:
+            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+
+        except Order.MultipleObjectsReturned:
             return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
     @login_decorator
