@@ -130,7 +130,6 @@ class PaymentView(View):
         try:
             user         = request.user
             order        = Order.objects.get(user=user, status__name=SHOPPING_BASKET)
-            cart_lists   = order.cart_set.all()
             product_info = [
                 {
                     "cartId"    : cart_list.id,
@@ -141,25 +140,21 @@ class PaymentView(View):
                     'totalPrice': cart_list.total_price,
                     'eachPrice' : cart_list.product.price,
                     'urlImage'  : cart_list.product.image_url,
-                } for cart_list in cart_lists
+                } for cart_list in order.cart_set.all()
             ]
-            user_info = [
-                {
+            user_info = {
                     'userName'       : user.name,
                     'userHomeAddress': user.home_address,
                     'userHomePhone'  : user.home_phone,
                     'userCellPhone'  : user.cell_phone,
                     'userEmail'      : user.email,
-                }
-            ]
-            user_address_info = [
-                {
+                },
+            user_address_info = {
                     'toPerson' : user.name,
                     'toAddress': user.home_address,
                     'homePhone': user.home_phone,
                     'cellPhone': user.cell_phone,
-                }
-            ]
+                },
             return JsonResponse({
                 'message': 'SUCCESS',
                 'result' : {
