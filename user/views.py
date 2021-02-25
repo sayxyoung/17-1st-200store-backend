@@ -2,7 +2,10 @@ from datetime           import datetime, timedelta
 from json               import JSONDecodeError
 from jwt                import DecodeError
 
-import bcrypt, json, jwt, re, pandas
+import bcrypt
+import json
+import jwt
+import re
 
 from django.http        import JsonResponse
 from django.views       import View
@@ -109,7 +112,8 @@ class MyPageMainView(View):
         user         = request.user
         coupon       = Coupon.objects.filter(user=user).count()
         point        = Point.objects.filter(user=user).order_by('-create_at').first()
-        orders       = Order.objects.filter(user_id=user.id).values('status__name').annotate(count=Count('status')) 
+        orders       = Order.objects.filter(user_id=user.id).values('status__name')\
+                .annotate(count=Count('status')) 
 
         recently_views = RecentlyView.objects.filter(user=user).\
                 order_by('-create_at').distinct()[:RECENTLY_VIEW_COUNT]
