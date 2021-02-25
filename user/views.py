@@ -102,17 +102,17 @@ class SignUpView(View):
             return JsonResponse({'message': 'BAD_REQUEST'})
 
 class MyPageMainView(View):
-    RECENTLY_VIEW_COUNT = 4
-
     @login_decorator
     def get(self, request):
+        RECENTLY_VIEW_COUNT = 4 
+
         user         = request.user
         coupon       = Coupon.objects.filter(user=user).count()
-        point        = Point.objects.filter(user=user).order_by('-create_at')[:1]
-        orders       = Order.objects.filter(user_id=1).values('status__name').annotate(count=Count('status'))
+        point        = Point.objects.filter(user=user).order_by('-create_at').first()
+        orders       = Order.objects.filter(user_id=user.id).values('status__name').annotate(count=Count('status'))
         order_status = [{order['status__name']:order['count']} for order in orders]
 
-        recently_views = RecentlyView.objects.filter(user=user).order_by('-create_at').distinct()[:4]
+        recently_views = RecentlyView.objects.filter(user=user).order_by('-create_at').distinct()[:RECENTLY_VIEW_COUNT]
 
         recently_views = [{
             'name'     : view.product.name,
@@ -125,7 +125,7 @@ class MyPageMainView(View):
                 'name'     : user.name,
                 'grade'    : user.grade.name,
                 'coupon'   : coupon,
-                'point'    : point[0].remaining_point,
+                'point'    : point.remaining_point,
             },
             'orderStatus'  : order_status,
             'recentlyView' : recently_views

@@ -40,7 +40,7 @@ class ProductListView(View):
         compare_date    = timezone.localtime() - timedelta(days=30)
 
         product_list = Product.objects.all().order_by(sorting) \
-            if category_name is None else Product.objects.filter(category__name =\
+            if category_name is None or category_name == '전체' else Product.objects.filter(category__name =\
             category_name).order_by(sorting)
 
         products = [{
