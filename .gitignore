@@ -357,4 +357,7 @@ my_settings.py
 .idea
 
 db_uploader.py
-csv
+
+csv_files
+
+db_create.py

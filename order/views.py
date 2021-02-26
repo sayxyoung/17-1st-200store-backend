@@ -66,16 +66,16 @@ class CartView(View):
             return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
         except KeyError:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'KEY_ERROR'}, status=400)
 
         except Product.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
         except Order.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
         except Order.MultipleObjectsReturned:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'MULTIPLE_OBJECTS_RETURNED'}, status=400)
 
     @login_decorator
     def get(self, request, *args, **kwargs):
@@ -98,7 +98,7 @@ class CartView(View):
             return JsonResponse({'message': 'SUCCESS', 'result': result}, status=200)
 
         except Order.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
     @login_decorator
     def delete(self, request, *args, **kwargs):
@@ -107,7 +107,7 @@ class CartView(View):
             int_cart_id  = [int(cart_id) for cart_id in cart_id_list]
             cart         = Cart.objects.filter(id__in=int_cart_id)
             if not cart.exists():
-                return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+                return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
             cart.delete()
             return JsonResponse({'message': 'SUCCESS'}, status=200)
@@ -116,13 +116,13 @@ class CartView(View):
             return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
         except KeyError:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'KEY_ERROR'}, status=400)
 
         except Order.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
         except OrderStatus.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
 class PaymentView(View):
     @login_decorator
@@ -130,6 +130,7 @@ class PaymentView(View):
         try:
             user         = request.user
             order        = Order.objects.get(user=user, status__name=SHOPPING_BASKET)
+
             product_info = [
                 {
                     "cartId"    : cart_list.id,
@@ -165,16 +166,16 @@ class PaymentView(View):
             }, status=200)
 
         except Address.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
         except Order.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
         except Order.MultipleObjectsReturned:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'MULTIPLE_OBJECTS_RETURNED'}, status=400)
 
         except OrderStatus.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
 def get_order_list(request):
     compare_date = timezone.localtime() - timedelta(days=7)
