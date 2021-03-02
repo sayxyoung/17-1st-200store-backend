@@ -1,7 +1,7 @@
 import json
 import uuid
-from json             import JSONDecodeError
 from datetime         import datetime, timedelta
+from json             import JSONDecodeError
 
 from django.db        import transaction
 from django.db.models import Q
@@ -9,9 +9,13 @@ from django.http      import JsonResponse
 from django.views     import View
 from django.utils     import timezone
 
-from order.models     import Order, Cart, OrderStatus
+from order.models     import Cart
+from order.models     import Order
+from order.models     import OrderStatus
 from product.models   import MatchingReview
-from user.models      import Address, User
+from product.models   import Product
+from user.models      import Address
+from user.models      import User
 from utils            import login_decorator
 
 SHOPPING_BASKET = "장바구니"
@@ -62,16 +66,16 @@ class CartView(View):
             return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
         except KeyError:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'KEY_ERROR'}, status=400)
 
         except Product.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
         except Order.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
         except Order.MultipleObjectsReturned:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'MULTIPLE_OBJECTS_RETURNED'}, status=400)
 
     @login_decorator
     def get(self, request, *args, **kwargs):
@@ -94,7 +98,7 @@ class CartView(View):
             return JsonResponse({'message': 'SUCCESS', 'result': result}, status=200)
 
         except Order.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
     @login_decorator
     def delete(self, request, *args, **kwargs):
@@ -103,7 +107,7 @@ class CartView(View):
             int_cart_id  = [int(cart_id) for cart_id in cart_id_list]
             cart         = Cart.objects.filter(id__in=int_cart_id)
             if not cart.exists():
-                return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+                return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
             cart.delete()
             return JsonResponse({'message': 'SUCCESS'}, status=200)
@@ -112,13 +116,66 @@ class CartView(View):
             return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
 
         except KeyError:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'KEY_ERROR'}, status=400)
 
         except Order.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
         except OrderStatus.DoesNotExist:
-            return JsonResponse({'message': 'BAD_REQUEST'}, status=400)
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
+
+class PaymentView(View):
+    @login_decorator
+    def get(self, request, *args, **kwargs):
+        try:
+            user         = request.user
+            order        = Order.objects.get(user=user, status__name=SHOPPING_BASKET)
+
+            product_info = [
+                {
+                    "cartId"    : cart_list.id,
+                    "productId" : cart_list.product_id,
+                    "product"   : cart_list.product.name,
+                    'option'    : cart_list.option,
+                    'quantity'  : cart_list.quantity,
+                    'totalPrice': cart_list.total_price,
+                    'eachPrice' : cart_list.product.price,
+                    'urlImage'  : cart_list.product.image_url,
+                } for cart_list in order.cart_set.all()
+            ]
+            user_info = {
+                    'userName'       : user.name,
+                    'userHomeAddress': user.home_address,
+                    'userHomePhone'  : user.home_phone,
+                    'userCellPhone'  : user.cell_phone,
+                    'userEmail'      : user.email,
+                },
+            user_address_info = {
+                    'toPerson' : user.name,
+                    'toAddress': user.home_address,
+                    'homePhone': user.home_phone,
+                    'cellPhone': user.cell_phone,
+                },
+            return JsonResponse({
+                'message': 'SUCCESS',
+                'result' : {
+                    'product_info'     : product_info,
+                    'user_info'        : user_info,
+                    'user_address_info': user_address_info,
+                }
+            }, status=200)
+
+        except Address.DoesNotExist:
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
+
+        except Order.DoesNotExist:
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
+
+        except Order.MultipleObjectsReturned:
+            return JsonResponse({'message': 'MULTIPLE_OBJECTS_RETURNED'}, status=400)
+
+        except OrderStatus.DoesNotExist:
+            return JsonResponse({'message': 'DOES_NOT_EXIST'}, status=400)
 
 def get_order_list(request):
     compare_date = timezone.localtime() - timedelta(days=7)
@@ -126,7 +183,7 @@ def get_order_list(request):
     end_date     = request.GET.get('endDate', timezone.localtime())
 
     orders = Order.objects.filter(user_id=request.user.id, create_at__range=(start_date, end_date))
-    
+
     result = [{
         'serialNumber' : order.serial_number,
         'orderStatus'  : order.status.id,
@@ -140,7 +197,7 @@ def get_order_list(request):
             'productStatus' : cart.status.id,
             'isReview'      : MatchingReview.objects.filter(order=order.id, product=cart.product).exists()
         } for cart in order.cart_set.all()]
-    } for order in orders] 
+    } for order in orders]
 
     return result
 
@@ -169,6 +226,7 @@ class OrderListView(View):
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status=400)
+
         except Cart.DoesNotExist:
             return JsonResponse({'message':'DOES_NOT_EXIST'}, status=400)
         
