@@ -1,6 +1,6 @@
 ![logo](https://user-images.githubusercontent.com/74485621/109629698-72b1fa00-7b87-11eb-9fd2-6e89988293c4.png)
 # 200store(이백문방구)
-***
+
 
 ## Title 
 * 프로젝트명 : 이백문방구
@@ -24,7 +24,7 @@
 * miniconda
 * Github, Slack, Trello
 
-## Referance
+## Reference
 👉🏻 [**시연영상 바로가기**](https://www.youtube.com/watch?v=OLsMR11oai8https://www.youtube.com/watch?v=OLsMR11oai8)
 
 👉🏻 [**기술문서 바로기가**](https://www.notion.so/Project-technical-documentation-fecc5c24866d4536affc56df6b82c483)
