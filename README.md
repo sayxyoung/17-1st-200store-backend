@@ -27,4 +27,4 @@
 ## Reference
 👉🏻 [**시연영상 바로가기**](https://www.youtube.com/watch?v=OLsMR11oai8https://www.youtube.com/watch?v=OLsMR11oai8)
 
-👉🏻 [**기술문서 바로기가**](https://www.notion.so/Project-technical-documentation-fecc5c24866d4536affc56df6b82c483)
+👉🏻 [**기술문서 바로가기**](https://www.notion.so/Project-technical-documentation-fecc5c24866d4536affc56df6b82c483)
