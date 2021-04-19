@@ -93,7 +93,7 @@ class ProductLikeView(View):
     @login_decorator
     def get(self, request):
         
-        likes = reqeust.user.productlike_set.all()
+        likes = request.user.productlike_set.all()
         likes = [{
             'id'       : like.product.id,
             'name'     : like.product.name,
@@ -114,8 +114,7 @@ class ProductLikeView(View):
 
 class MainView(View):
     def get(self, request):
-        compare_date = compare_date = timezone.localtime() - \
-               timedelta(days=30) + timedelta(days=-30)
+        compare_date = timezone.localtime() - timedelta(days=30)
         checkBest    = check_best_list()
 
         BEST_COUNT = 4
