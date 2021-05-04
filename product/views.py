@@ -134,7 +134,7 @@ class MainView(View):
             'isSale'   : is_sale(best.sale)
         } for best in best_query]
 
-        new_query  = Product.objects.all().order_by('-sale')[:NEW_COUNT]
+        new_query  = Product.objects.all().order_by('-create_at')[:NEW_COUNT]
         new_list   = [{
             'id'       : new.id,
             'name'     : new.name,
